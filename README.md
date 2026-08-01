@@ -137,7 +137,7 @@ Tùy biến
 - Sửa style trong thư mục `styles`
 - Upload ảnh demo vào `assets/screenshot.png` để hiển thị trong README
 
-Giấy phép
+Giấy phép:
 Kho này dùng MIT License — xem file LICENSE kèm theo.
 
 Đóng góp vui lòng 
