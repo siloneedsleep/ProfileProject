@@ -71,12 +71,4 @@ Bạn có thể triển khai lại bằng cách:
 
 ## Đóng góp
 
-Chúc mừng nếu bạn muốn đóng góp! Mời tạo Pull Request hoặc Issue nêu rõ thay đổi.
-
-## Giấy phép
-
-Nếu bạn muốn kho này có giấy phép, hãy thêm file `LICENSE` (gợi ý: MIT) để rõ ràng về quyền sử dụng.
-
----
-
-Cần mình thêm: ảnh demo (screenshot), badges khác (build/coverage), hoặc hướng dẫn deploy chi tiết (nginx config, systemd service)?
+Hoan nghênh mọi đóng góp đến từ bạn và cộng đồng! Mời tạo Pull Request hoặc Issue và nêu rõ thay đổi.
