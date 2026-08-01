@@ -1,74 +1,148 @@
-# siloneedsleep — Personal Profile Website
+<p align="center">
+  <a href="https://siloneedsleep.duckdns.org/">
+    <img alt="Visit Website" src="https://img.shields.io/badge/→_Visit_siloneedsleep.duckdns.org-316BFF?style=for-the-badge&logo=google-chrome&logoColor=white" />
+  </a>
+</p>
 
-[![Visit Website](https://img.shields.io/badge/Visit-siloneedsleep.duckdns.org-316BFF?style=for-the-badge&logo=internet-explorer&logoColor=white)](https://siloneedsleep.duckdns.org/)
+# SILO — Personal Profile / Trang hồ sơ cá nhân
 
-Trang hồ sơ cá nhân được phát triển bằng Next.js và triển khai tại: https://siloneedsleep.duckdns.org/
+English | Vietnamese
 
-## Mô tả
+---
 
-Repository này chứa mã nguồn trang cá nhân/portfolio của tác giả. Mục tiêu: tối giản, nhanh, dễ tùy biến và dễ triển khai.
+## Overview (English)
 
-## Điểm nổi bật
+SILO is a minimal, fast personal profile / portfolio built with Next.js (TypeScript). It focuses on clarity, performance, and easy customization. The live site is available at: https://siloneedsleep.duckdns.org/
 
-- Thiết kế gọn nhẹ, thích hợp làm trang giới thiệu cá nhân và liên kết dự án.
-- Dự án sử dụng Next.js (TypeScript) — có thể chạy dưới dạng ứng dụng server-side hoặc xuất tĩnh.
-- Đã triển khai và hoạt động tại https://siloneedsleep.duckdns.org/.
+Highlights
+- Minimal, responsive design
+- Can run as a Next.js app or be exported as static files
+- Easy to customize using HTML/CSS and TypeScript
 
-## Ngôn ngữ & Công nghệ
+Quick stats (repository language breakdown)
+- HTML — 86.7%
+- TypeScript — 7.3%
+- CSS — 5.7%
+- JavaScript — 0.3%
 
-- Next.js + TypeScript
-- HTML, CSS
-- Tĩnh/Frontend-first
-
-(Breakdown ngôn ngữ trong repository: HTML ~86.7%, TypeScript ~7.3%, CSS ~5.7%, JavaScript ~0.3%)
-
-## Chạy dự án (cục bộ)
-
-1. Clone repository:
+Quick start (local)
+1. Clone the repo:
 
    git clone https://github.com/siloneedsleep/profile.git
    cd profile
 
-2. Cài dependencies và chạy môi trường phát triển:
+2. Install dependencies and run dev server:
 
    npm install
    npm run dev
 
-3. Mở trình duyệt tới http://localhost:3000 để xem trang.
+3. Open http://localhost:3000
 
-4. Để build và chạy production:
+Build & run production
 
    npm run build
    npm start
 
-Hoặc để xuất tĩnh (nếu muốn deploy dưới dạng static):
+Export static (if configured)
 
    npm run build
    npm run export
 
-Thao tác cụ thể có thể khác nếu repo dùng mẫu v0 — xem script trong `package.json`.
+Deployment (short)
+- Build on the server or locally: `npm run build`
+- Run the app with a process manager (systemd, pm2, docker)
+- Example nginx reverse proxy:
 
-## Triển khai
+```
+server {
+  listen 80;
+  server_name siloneedsleep.duckdns.org;
 
-Trang đang chạy tại: https://siloneedsleep.duckdns.org/
+  location / {
+    proxy_pass http://127.0.0.1:3000;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  }
+}
+```
+Use certbot or another ACME client to enable HTTPS.
 
-Bạn có thể triển khai lại bằng cách:
+Customization
+- Edit the main content in `app/page.tsx` or `pages/index.*` (depending on project structure)
+- Modify styles in the `styles` folder
+- Add or replace `assets/screenshot.png` to show a demo preview in this README
 
-- Đẩy build lên VPS (ví dụ với nginx reverse proxy và Node service), hoặc
-- Xuất tĩnh và phục vụ bằng web server tĩnh (nginx, Caddy), hoặc
-- Dùng dịch vụ hosting hỗ trợ Next.js.
+License
+This repository is licensed under the MIT License — see the included LICENSE file.
 
-## Tùy biến nhanh
+Contributing
+Create a Pull Request or open an Issue. If you want, I can add PR/Issue templates or CI badges.
 
-- Nội dung chính: chỉnh `app/page.tsx` hoặc `pages/index.*` (tùy cấu trúc dự án).
-- CSS/Style: chỉnh thư mục `styles` hoặc file CSS tương ứng.
-- Thêm tính năng phía client: chỉnh/viết TypeScript trong `src` hoặc `app`.
+---
 
-## Mạng xã hội & Liên hệ
+## Tóm tắt (Tiếng Việt)
 
-- Website: https://siloneedsleep.duckdns.org/
-- Muốn cập nhật thông tin liên hệ trên trang, chỉnh nội dung trong file giao diện tương ứng và gửi PR.
+SILO là trang hồ sơ/portfolio cá nhân tối giản, phát triển bằng Next.js (TypeScript). Mục tiêu là rõ ràng, tải nhanh và dễ tùy biến. Trang đang hoạt động tại: https://siloneedsleep.duckdns.org/
 
-## Đóng góp
+Điểm nổi bật
+- Giao diện tối giản, responsive
+- Có thể chạy như ứng dụng Next.js hoặc xuất thành tệp tĩnh
+- Dễ chỉnh sửa bằng HTML/CSS và TypeScript
 
-Hoan nghênh mọi đóng góp đến từ bạn và cộng đồng! Mời tạo Pull Request hoặc Issue và nêu rõ thay đổi.
+Thống kê ngôn ngữ trong repo
+- HTML — 86.7%
+- TypeScript — 7.3%
+- CSS — 5.7%
+- JavaScript — 0.3%
+
+Chạy nhanh (cục bộ)
+1. Clone:
+
+   git clone https://github.com/siloneedsleep/profile.git
+   cd profile
+
+2. Cài và chạy:
+
+   npm install
+   npm run dev
+
+3. Mở http://localhost:3000
+
+Build & chạy production
+
+   npm run build
+   npm start
+
+Export tĩnh (nếu có cấu hình)
+
+   npm run build
+   npm run export
+
+Triển khai (ngắn gọn)
+- Build trên server hoặc local: `npm run build`
+- Chạy app bằng process manager (systemd, pm2, docker)
+- Ví dụ cấu hình nginx làm reverse proxy (xem phần English ở trên)
+- Dùng certbot để bật HTTPS
+
+Tùy biến
+- Sửa nội dung chính tại `app/page.tsx` hoặc `pages/index.*`
+- Sửa style trong thư mục `styles`
+- Upload ảnh demo vào `assets/screenshot.png` để hiển thị trong README
+
+Giấy phép
+Kho này dùng MIT License — xem file LICENSE kèm theo.
+
+Đóng góp
+Tạo Pull Request hoặc Issue để đề xuất thay đổi. Mình có thể thêm template PR/Issue hoặc badges CI nếu bạn muốn.
+
+---
+
+If you'd like, I can:
+- Add a screenshot preview (upload image to `assets/` and I'll insert it)
+- Add CI/badges (build, license, last commit)
+- Add detailed nginx + systemd deployment examples
+
+---
+
+Generated and updated by repository maintainer via GitHub Copilot.
