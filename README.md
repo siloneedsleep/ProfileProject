@@ -33,25 +33,25 @@ Quick stats (repository language breakdown)
 Quick start (local)
 1. Clone the repo:
 
-   git clone https://github.com/siloneedsleep/profile.git
-   cd profile
+   `git clone https://github.com/siloneedsleep/profile.git
+   cd profile`
 
 2. Install dependencies and run dev server:
 
-   npm install
-   npm run dev
+   `npm install
+   npm run dev`
 
 3. Open http://localhost:3000
 
 Build & run production
 
-   npm run build
-   npm start
+   `npm run build
+   npm start`
 
 Export static (if configured)
 
-   npm run build
-   npm run export
+   `npm run build
+   npm run export`
 
 Deployment (short)
 - Build on the server or locally: `npm run build`
@@ -106,25 +106,25 @@ Thống kê ngôn ngữ trong repo
 Chạy nhanh (cục bộ)
 1. Clone:
 
-   git clone https://github.com/siloneedsleep/profile.git
-   cd profile
+   `git clone https://github.com/siloneedsleep/profile.git
+   cd profile`
 
 2. Cài và chạy:
 
-   npm install
-   npm run dev
+   `npm install
+   npm run dev`
 
 3. Mở http://localhost:3000
 
 Build & chạy production
 
-   npm run build
-   npm start
+   `npm run build
+   npm start`
 
 Export tĩnh (nếu có cấu hình)
 
-   npm run build
-   npm run export
+   `npm run build
+   npm run export`
 
 Triển khai (ngắn gọn)
 - Build trên server hoặc local: `npm run build`
@@ -142,14 +142,3 @@ Kho này dùng MIT License — xem file LICENSE kèm theo.
 
 Đóng góp
 Tạo Pull Request hoặc Issue để đề xuất thay đổi. Hoan nghênh những thay đổi từ bạn và cộng đồng!
-
----
-
-If you'd like, I can also:
-- Add the screenshot preview (upload image to `assets/` and I'll insert it)
-- Add CI/badges (build, license, last commit)
-- Add detailed nginx + systemd deployment examples
-
----
-
-Generated and updated by repository maintainer via GitHub Copilot.
