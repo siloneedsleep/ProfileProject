@@ -1,33 +1,82 @@
-# personal-profile-page
+# siloneedsleep — Personal Profile Website
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [v0](https://v0.app).
+[![Visit Website](https://img.shields.io/badge/Visit-siloneedsleep.duckdns.org-316BFF?style=for-the-badge&logo=internet-explorer&logoColor=white)](https://siloneedsleep.duckdns.org/)
 
-## Built with v0
+Trang hồ sơ cá nhân được phát triển bằng Next.js và triển khai tại: https://siloneedsleep.duckdns.org/
 
-This repository is linked to a [v0](https://v0.app) project. You can continue developing by visiting the link below -- start new chats to make changes, and v0 will push commits directly to this repo. Every merge to `main` will automatically deploy.
+## Mô tả
 
-[Continue working on v0 →](https://v0.app/chat/projects/prj_tvQCZmJbwDGirPnaNmNNuA1XD4aZ)
+Repository này chứa mã nguồn trang cá nhân/portfolio của tác giả. Mục tiêu: tối giản, nhanh, dễ tùy biến và dễ triển khai.
 
-## Getting Started
+## Điểm nổi bật
 
-First, run the development server:
+- Thiết kế gọn nhẹ, thích hợp làm trang giới thiệu cá nhân và liên kết dự án.
+- Dự án sử dụng Next.js (TypeScript) — có thể chạy dưới dạng ứng dụng server-side hoặc xuất tĩnh.
+- Đã triển khai và hoạt động tại https://siloneedsleep.duckdns.org/.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## Ngôn ngữ & Công nghệ
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Next.js + TypeScript
+- HTML, CSS
+- Tĩnh/Frontend-first
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+(Breakdown ngôn ngữ trong repository: HTML ~86.7%, TypeScript ~7.3%, CSS ~5.7%, JavaScript ~0.3%)
 
-## Learn More
+## Chạy dự án (cục bộ)
 
-To learn more, take a look at the following resources:
+1. Clone repository:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [v0 Documentation](https://v0.app/docs) - learn about v0 and how to use it.
+   git clone https://github.com/siloneedsleep/profile.git
+   cd profile
+
+2. Cài dependencies và chạy môi trường phát triển:
+
+   npm install
+   npm run dev
+
+3. Mở trình duyệt tới http://localhost:3000 để xem trang.
+
+4. Để build và chạy production:
+
+   npm run build
+   npm start
+
+Hoặc để xuất tĩnh (nếu muốn deploy dưới dạng static):
+
+   npm run build
+   npm run export
+
+Thao tác cụ thể có thể khác nếu repo dùng mẫu v0 — xem script trong `package.json`.
+
+## Triển khai
+
+Trang đang chạy tại: https://siloneedsleep.duckdns.org/
+
+Bạn có thể triển khai lại bằng cách:
+
+- Đẩy build lên VPS (ví dụ với nginx reverse proxy và Node service), hoặc
+- Xuất tĩnh và phục vụ bằng web server tĩnh (nginx, Caddy), hoặc
+- Dùng dịch vụ hosting hỗ trợ Next.js.
+
+## Tùy biến nhanh
+
+- Nội dung chính: chỉnh `app/page.tsx` hoặc `pages/index.*` (tùy cấu trúc dự án).
+- CSS/Style: chỉnh thư mục `styles` hoặc file CSS tương ứng.
+- Thêm tính năng phía client: chỉnh/viết TypeScript trong `src` hoặc `app`.
+
+## Mạng xã hội & Liên hệ
+
+- Website: https://siloneedsleep.duckdns.org/
+- Muốn cập nhật thông tin liên hệ trên trang, chỉnh nội dung trong file giao diện tương ứng và gửi PR.
+
+## Đóng góp
+
+Chúc mừng nếu bạn muốn đóng góp! Mời tạo Pull Request hoặc Issue nêu rõ thay đổi.
+
+## Giấy phép
+
+Nếu bạn muốn kho này có giấy phép, hãy thêm file `LICENSE` (gợi ý: MIT) để rõ ràng về quyền sử dụng.
+
+---
+
+Cần mình thêm: ảnh demo (screenshot), badges khác (build/coverage), hoặc hướng dẫn deploy chi tiết (nginx config, systemd service)?
