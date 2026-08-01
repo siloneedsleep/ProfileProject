@@ -2,9 +2,14 @@
   <a href="https://siloneedsleep.duckdns.org/">
     <img alt="Visit Website" src="https://img.shields.io/badge/→_Visit_siloneedsleep.duckdns.org-316BFF?style=for-the-badge&logo=google-chrome&logoColor=white" />
   </a>
+  <a href="./LICENSE">
+    <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-00ADEF?style=for-the-badge&logo=opensourceinitiative&logoColor=white" />
+  </a>
 </p>
 
 # SILO — Personal Profile / Trang hồ sơ cá nhân
+
+Author: @siloneedsleep
 
 English | Vietnamese
 
@@ -85,6 +90,8 @@ Create a Pull Request or open an Issue. If you want, I can add PR/Issue template
 
 SILO là trang hồ sơ/portfolio cá nhân tối giản, phát triển bằng Next.js (TypeScript). Mục tiêu là rõ ràng, tải nhanh và dễ tùy biến. Trang đang hoạt động tại: https://siloneedsleep.duckdns.org/
 
+Tác giả: @siloneedsleep
+
 Điểm nổi bật
 - Giao diện tối giản, responsive
 - Có thể chạy như ứng dụng Next.js hoặc xuất thành tệp tĩnh
@@ -138,8 +145,8 @@ Tạo Pull Request hoặc Issue để đề xuất thay đổi. Mình có thể 
 
 ---
 
-If you'd like, I can:
-- Add a screenshot preview (upload image to `assets/` and I'll insert it)
+If you'd like, I can also:
+- Add the screenshot preview (upload image to `assets/` and I'll insert it)
 - Add CI/badges (build, license, last commit)
 - Add detailed nginx + systemd deployment examples
 
