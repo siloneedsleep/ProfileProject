@@ -17,7 +17,7 @@ English | Vietnamese
 
 ## Overview (English)
 
-SILO is a minimal, fast personal profile / portfolio built with Next.js (TypeScript). It focuses on clarity, performance, and easy customization. The live site is available at: https://siloneedsleep.duckdns.org/
+Profile Project is a minimal, fast personal profile / portfolio built with Next.js (TypeScript). It focuses on clarity, performance, and easy customization. The live site is available at: https://siloneedsleep.duckdns.org/
 
 Highlights
 - Minimal, responsive design
@@ -88,7 +88,7 @@ Create a Pull Request or open an Issue. If you want, I can add PR/Issue template
 
 ## Tóm tắt (Tiếng Việt)
 
-Profile Project là dự án trang hồ sơ/portfolio cá nhân tối giản, phát triển bằng Next.js (TypeScript). Mục tiêu là rõ ràng, tải nhanh và dễ tùy biến. Trang đang hoạt động tại: https://siloneedsleep.duckdns.org/
+Profile Project là trang hồ sơ/portfolio cá nhân tối giản, phát triển bằng Next.js (TypeScript). Mục tiêu là rõ ràng, tải nhanh và dễ tùy biến. Trang đang hoạt động tại: https://siloneedsleep.duckdns.org/
 
 Tác giả: @siloneedsleep
 
@@ -149,3 +149,7 @@ If you'd like, I can also:
 - Add the screenshot preview (upload image to `assets/` and I'll insert it)
 - Add CI/badges (build, license, last commit)
 - Add detailed nginx + systemd deployment examples
+
+---
+
+Generated and updated by repository maintainer via GitHub Copilot.
