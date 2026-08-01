@@ -3,388 +3,1676 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="theme-color" content="#0c0f14" />
-<title>@siloneedsleep — Trang cá nhân</title>
+<meta name="theme-color" content="#07080b" />
+<title>@siloneedsleep</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --bg: #0c0f14;
-    --card: rgba(255, 255, 255, 0.045);
-    --card-border: rgba(255, 255, 255, 0.09);
+    --bg: #07080b;
     --text: #f2f5f9;
-    --muted: #8b95a5;
+    --muted: #8a94a6;
     --accent: #4fd1c5;
-    --field: rgba(255, 255, 255, 0.05);
-    --radius: 2rem;
+    --card-alpha: 0.05;
+    --card-blur: 18px;
+    --radius: 24px;
+    --glow: 34px;
+    --line: rgba(255, 255, 255, 0.09);
+    --font: "Be Vietnam Pro", system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, monospace;
   }
 
   * { box-sizing: border-box; }
-
   html { background: var(--bg); }
 
   body {
     margin: 0;
     min-height: 100vh;
+    font-family: var(--font);
+    color: var(--text);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  body.mono-font { --font: var(--mono); }
+  body.no-cursor, body.no-cursor * { cursor: none !important; }
+
+  /* ---------- Lớp nền ---------- */
+  #bgLayer {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    background:
+      radial-gradient(60rem 40rem at 50% -10%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%),
+      radial-gradient(45rem 35rem at 88% 108%, rgba(99, 132, 255, 0.12), transparent 70%),
+      var(--bg);
+  }
+  #bgLayer img, #bgLayer video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  #bgTint { position: fixed; inset: 0; z-index: 1; background: #000; opacity: 0.45; pointer-events: none; }
+  #fx { position: fixed; inset: 0; z-index: 2; pointer-events: none; }
+
+  /* ---------- Màn hình mở đầu ---------- */
+  #enter {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: grid;
+    place-items: center;
+    gap: 0.75rem;
+    text-align: center;
+    background: rgba(4, 5, 7, 0.72);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    cursor: pointer;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+  }
+  #enter.hidden { opacity: 0; visibility: hidden; }
+  #enter .inner { display: grid; gap: 0.6rem; justify-items: center; animation: floaty 3.2s ease-in-out infinite; }
+  #enter h2 { margin: 0; font-size: clamp(1.4rem, 5vw, 2.1rem); font-weight: 600; letter-spacing: -0.02em; }
+  #enter p { margin: 0; font-size: 0.82rem; color: var(--muted); letter-spacing: 0.16em; text-transform: uppercase; }
+  @keyframes floaty { 0%, 100% { transform: translateY(-5px); } 50% { transform: translateY(5px); } }
+
+  /* ---------- Bố cục ---------- */
+  .wrap {
+    position: relative;
+    z-index: 3;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem 1.25rem;
-    font-family: "Be Vietnam Pro", system-ui, -apple-system, sans-serif;
-    color: var(--text);
-    background:
-      radial-gradient(60rem 40rem at 50% -10%, rgba(79, 209, 197, 0.13), transparent 70%),
-      radial-gradient(45rem 35rem at 90% 110%, rgba(99, 132, 255, 0.10), transparent 70%),
-      var(--bg);
-    -webkit-font-smoothing: antialiased;
+    padding: 3rem 1.1rem 5.5rem;
   }
-
   .card {
     width: 100%;
-    max-width: 500px;
-    padding: 2.5rem 1.75rem 1.75rem;
+    max-width: 460px;
+    padding: 2.25rem 1.6rem 1.5rem;
     border-radius: var(--radius);
-    background: var(--card);
-    border: 1px solid var(--card-border);
-    backdrop-filter: blur(18px) saturate(140%);
-    -webkit-backdrop-filter: blur(18px) saturate(140%);
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+    background: rgba(255, 255, 255, var(--card-alpha));
+    border: 1px solid var(--line);
+    backdrop-filter: blur(var(--card-blur)) saturate(140%);
+    -webkit-backdrop-filter: blur(var(--card-blur)) saturate(140%);
+    box-shadow: 0 26px 70px rgba(0, 0, 0, 0.6), 0 0 var(--glow) color-mix(in srgb, var(--accent) 22%, transparent);
     text-align: center;
+    transition: transform 0.18s ease, box-shadow 0.3s ease;
+    transform-style: preserve-3d;
+    animation: rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
   }
+  @keyframes rise { from { opacity: 0; transform: translateY(18px) scale(0.98); } }
 
-  .avatar {
-    width: 110px;
-    height: 110px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba(255, 255, 255, 0.14);
-    box-shadow: 0 0 0 6px rgba(79, 209, 197, 0.07), 0 0 28px rgba(79, 209, 197, 0.22);
-    display: block;
-    margin: 0 auto 1.1rem;
-  }
-
-  .handle {
-    margin: 0;
-    font-size: 0.85rem;
-    color: var(--muted);
-    letter-spacing: 0.02em;
-  }
-
-  .name {
-    margin: 0.3rem 0 0.75rem;
-    font-size: 1.85rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    text-wrap: balance;
-  }
-
-  .badge {
-    display: inline-block;
-    padding: 0.35rem 0.95rem;
-    border-radius: 999px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--text);
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid var(--card-border);
-  }
-
-  .bio {
-    margin: 1.35rem 0 0;
-    padding: 1rem 1.15rem;
-    border-radius: 1.1rem;
-    background: rgba(255, 255, 255, 0.035);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    color: var(--text);
-    font-size: 0.94rem;
-    line-height: 1.6;
-    white-space: pre-wrap;
-    text-align: left;
-  }
-
-  .socials {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.7rem;
-    margin-top: 1.5rem;
-  }
-
-  .socials a {
-    width: 42px;
-    height: 42px;
+  body.layout-split .wrap { align-items: center; }
+  body.layout-split .card {
+    max-width: 820px;
     display: grid;
-    place-items: center;
+    grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+    gap: 1.75rem;
+    text-align: left;
+    padding: 2rem;
+  }
+  body.layout-split .side { border-right: 1px solid var(--line); padding-right: 1.6rem; }
+  body.layout-split .avatar-wrap { margin-inline: 0; }
+  body.layout-split .socials, body.layout-split .badges { justify-content: flex-start; }
+  @media (max-width: 720px) {
+    body.layout-split .card { grid-template-columns: 1fr; gap: 1.25rem; }
+    body.layout-split .side { border-right: 0; border-bottom: 1px solid var(--line); padding: 0 0 1.25rem; }
+  }
+
+  .card.tilt-none { transform: none !important; }
+
+  /* ---------- Thanh trên ---------- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 1.1rem;
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+  .topbar .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--line);
+  }
+  .topbar svg { width: 13px; height: 13px; }
+  .icon-btn {
+    font: inherit;
+    cursor: pointer;
+    width: 28px; height: 28px;
+    display: grid; place-items: center;
     border-radius: 50%;
     color: var(--muted);
     background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.07);
+    border: 1px solid var(--line);
+    transition: color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+  }
+  .icon-btn:hover { color: var(--text); background: rgba(255, 255, 255, 0.11); transform: translateY(-2px); }
+  .icon-btn svg { width: 14px; height: 14px; }
+
+  /* ---------- Ảnh đại diện ---------- */
+  .avatar-wrap { position: relative; width: 116px; height: 116px; margin: 0 auto 1rem; }
+  .avatar {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    border: 2px solid rgba(255, 255, 255, 0.16);
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 8%, transparent),
+                0 0 30px color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+  body.avatar-square .avatar { border-radius: 22%; }
+  .ring {
+    position: absolute;
+    inset: -9px;
+    border-radius: 50%;
+    border: 1.5px dashed color-mix(in srgb, var(--accent) 60%, transparent);
+    animation: spin 9s linear infinite;
+    pointer-events: none;
+  }
+  body.avatar-square .ring { border-radius: 26%; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .status-dot {
+    position: absolute;
+    right: 4px; bottom: 4px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 3px solid #0b0d11;
+    background: #43b581;
+  }
+  .status-dot[data-s="idle"] { background: #faa61a; }
+  .status-dot[data-s="dnd"] { background: #f04747; }
+  .status-dot[data-s="offline"] { background: #747f8d; }
+  .status-dot[data-s="none"] { display: none; }
+
+  /* ---------- Tên & badge ---------- */
+  .name {
+    margin: 0;
+    font-size: clamp(1.6rem, 5vw, 2rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+  .name.fx-glow { text-shadow: 0 0 8px color-mix(in srgb, var(--accent) 70%, transparent), 0 0 26px color-mix(in srgb, var(--accent) 45%, transparent); }
+  .name.fx-gradient {
+    background: linear-gradient(100deg, var(--accent), #ffffff 55%, var(--accent));
+    background-size: 220% 100%;
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent;
+    animation: slide 5s linear infinite;
+  }
+  @keyframes slide { to { background-position: 220% 0; } }
+  .name.fx-rainbow { animation: hue 6s linear infinite; }
+  @keyframes hue { to { filter: hue-rotate(360deg); } }
+  .name .caret { color: var(--accent); animation: blink 1s step-end infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .handle { margin: 0.3rem 0 0; font-size: 0.84rem; color: var(--muted); font-family: var(--mono); }
+
+  .badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem; margin-top: 0.75rem; }
+  .badges span {
+    width: 27px; height: 27px;
+    display: grid; place-items: center;
+    border-radius: 8px;
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
+    transition: transform 0.18s ease;
+  }
+  .badges span:hover { transform: translateY(-3px) scale(1.06); }
+  .badges svg { width: 14px; height: 14px; }
+
+  .tagline {
+    display: inline-block;
+    margin-top: 0.8rem;
+    padding: 0.3rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--line);
+  }
+
+  .bio {
+    margin: 1.2rem 0 0;
+    font-size: 0.92rem;
+    line-height: 1.65;
+    color: #d7dde7;
+    white-space: pre-wrap;
+    text-wrap: pretty;
+  }
+
+  /* ---------- Mạng xã hội & liên kết ---------- */
+  .socials { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; margin-top: 1.3rem; }
+  .socials a {
+    position: relative;
+    width: 40px; height: 40px;
+    display: grid; place-items: center;
+    border-radius: 50%;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--line);
     transition: transform 0.18s ease, color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
   }
-
-  .socials a:hover,
-  .socials a:focus-visible {
-    transform: translateY(-4px);
+  .socials a:hover, .socials a:focus-visible {
+    transform: translateY(-5px);
     color: var(--text);
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.45);
+    background: color-mix(in srgb, var(--accent) 18%, transparent);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
     outline: none;
   }
-
-  .socials svg { width: 19px; height: 19px; }
-
-  .divider {
-    height: 1px;
-    margin: 1.6rem 0 1.1rem;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+  .socials svg { width: 18px; height: 18px; }
+  .socials a::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    padding: 0.25rem 0.5rem;
+    font-size: 0.68rem;
+    white-space: nowrap;
+    border-radius: 6px;
+    color: var(--text);
+    background: rgba(12, 14, 19, 0.95);
+    border: 1px solid var(--line);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease;
   }
+  .socials a:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  .btn {
+  .links { display: grid; gap: 0.55rem; margin-top: 1.2rem; }
+  .links a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    padding: 0.8rem 1rem;
+    border-radius: 14px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text);
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--line);
+    transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+  }
+  .links a:hover {
+    transform: translateX(4px);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+  .links svg { width: 15px; height: 15px; color: var(--accent); flex: none; }
+
+  /* ---------- Thẻ Discord ---------- */
+  .discord {
+    display: none;
+    align-items: center;
+    gap: 0.7rem;
+    margin-top: 1.2rem;
+    padding: 0.7rem 0.85rem;
+    border-radius: 14px;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid var(--line);
+  }
+  .discord.on { display: flex; }
+  .discord img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
+  .discord .dc-name { font-size: 0.85rem; font-weight: 600; }
+  .discord .dc-act { font-size: 0.74rem; color: var(--muted); font-family: var(--mono); }
+
+  /* ---------- Trình phát nhạc ---------- */
+  .player {
+    display: none;
+    margin-top: 1.2rem;
+    padding: 0.85rem;
+    border-radius: 16px;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid var(--line);
+  }
+  .player.on { display: block; }
+  .player-top { display: flex; align-items: center; gap: 0.65rem; }
+  .viz { display: flex; align-items: flex-end; gap: 2px; height: 26px; width: 46px; flex: none; }
+  .viz i { flex: 1; background: var(--accent); border-radius: 2px; height: 15%; transition: height 0.09s linear; }
+  .track { min-width: 0; flex: 1; }
+  .track b { display: block; font-size: 0.82rem; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .track span { font-size: 0.7rem; color: var(--muted); font-family: var(--mono); }
+  .pcontrols { display: flex; align-items: center; gap: 0.35rem; }
+  .seek-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.6rem; font-size: 0.68rem; color: var(--muted); font-family: var(--mono); }
+
+  input[type="range"] {
+    -webkit-appearance: none; appearance: none;
+    height: 4px;
+    flex: 1;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    outline: none;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: none;
+    box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 12px; height: 12px; border: none; border-radius: 50%; background: var(--accent);
+  }
+  .vol-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem; color: var(--muted); }
+  .vol-row svg { width: 14px; height: 14px; flex: none; }
+
+  footer { margin-top: 1.3rem; font-size: 0.7rem; color: var(--muted); font-family: var(--mono); }
+
+  /* ---------- Con trỏ tuỳ chỉnh ---------- */
+  #cursor, .trail {
+    position: fixed;
+    z-index: 90;
+    border-radius: 50%;
+    pointer-events: none;
+    left: 0; top: 0;
+  }
+  #cursor {
+    width: 12px; height: 12px;
+    background: var(--accent);
+    box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 80%, transparent);
+    transform: translate(-50%, -50%);
+  }
+  .trail {
+    width: 26px; height: 26px;
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    transform: translate(-50%, -50%);
+  }
+  #cursor.off, .trail.off { display: none; }
+
+  /* ---------- Bảng tuỳ chỉnh ---------- */
+  #panelBtn {
+    position: fixed;
+    right: 1rem; bottom: 1rem;
+    z-index: 70;
     font: inherit;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.7rem 1.2rem;
+    gap: 0.45rem;
+    padding: 0.62rem 1rem;
     border-radius: 999px;
-    font-size: 0.86rem;
+    font-size: 0.82rem;
     font-weight: 500;
+    color: #05201d;
+    background: var(--accent);
+    border: none;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+    transition: transform 0.18s ease, filter 0.18s ease;
+  }
+  #panelBtn:hover { transform: translateY(-2px); filter: brightness(1.08); }
+  #panelBtn svg { width: 15px; height: 15px; }
+
+  #panel {
+    position: fixed;
+    top: 0; right: 0; bottom: 0;
+    z-index: 80;
+    width: min(380px, 100%);
+    display: flex;
+    flex-direction: column;
+    background: rgba(10, 12, 16, 0.96);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-left: 1px solid var(--line);
+    transform: translateX(102%);
+    transition: transform 0.32s cubic-bezier(0.3, 0.9, 0.3, 1);
+  }
+  #panel.open { transform: none; }
+  .panel-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 1.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .panel-head h2 { margin: 0; font-size: 1rem; font-weight: 600; }
+  .tabs { display: flex; gap: 0.3rem; padding: 0.7rem 1.1rem 0; flex-wrap: wrap; }
+  .tabs button {
+    font: inherit;
+    cursor: pointer;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
     color: var(--muted);
     background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--card-border);
-    transition: color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+    border: 1px solid var(--line);
   }
+  .tabs button[aria-selected="true"] { color: #05201d; background: var(--accent); border-color: transparent; font-weight: 600; }
+  .panel-body { flex: 1; overflow-y: auto; padding: 1rem 1.1rem 1.5rem; }
+  .tabpane { display: none; }
+  .tabpane.on { display: block; }
 
-  .btn:hover { color: var(--text); background: rgba(255, 255, 255, 0.1); transform: translateY(-2px); }
-  .btn svg { width: 15px; height: 15px; }
-
-  .btn-primary {
-    color: #06231f;
-    background: var(--accent);
-    border-color: transparent;
-    font-weight: 600;
-  }
-  .btn-primary:hover { color: #06231f; background: #6ee0d6; }
-
-  .form { display: none; margin-top: 1.3rem; text-align: left; }
-  .form.open { display: block; }
-
-  .field { margin-bottom: 0.9rem; }
-
-  .field label {
-    display: block;
-    margin-bottom: 0.35rem;
-    font-size: 0.76rem;
-    font-weight: 500;
-    color: var(--muted);
-    letter-spacing: 0.02em;
-  }
-
-  .field input,
-  .field textarea {
+  .field { margin-bottom: 0.85rem; }
+  .field > label { display: block; margin-bottom: 0.3rem; font-size: 0.74rem; font-weight: 500; color: var(--muted); }
+  .field input[type="text"], .field input[type="url"], .field textarea, .field select {
     width: 100%;
-    padding: 0.7rem 0.85rem;
+    padding: 0.6rem 0.75rem;
     font: inherit;
-    font-size: 0.88rem;
+    font-size: 0.83rem;
     color: var(--text);
-    background: var(--field);
-    border: 1px solid var(--card-border);
-    border-radius: 0.85rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--line);
+    border-radius: 11px;
     resize: vertical;
   }
-
-  .field input:focus,
-  .field textarea:focus {
+  .field textarea { font-family: var(--mono); font-size: 0.78rem; line-height: 1.5; }
+  .field input:focus, .field textarea:focus, .field select:focus {
     outline: none;
-    border-color: rgba(79, 209, 197, 0.55);
-    box-shadow: 0 0 0 3px rgba(79, 209, 197, 0.12);
+    border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
   }
+  .field input[type="color"] {
+    width: 100%; height: 38px;
+    padding: 2px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    cursor: pointer;
+  }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .check { display: flex; align-items: center; gap: 0.55rem; margin-bottom: 0.6rem; font-size: 0.82rem; }
+  .check input { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+  .hint { margin: 0.3rem 0 0; font-size: 0.7rem; color: var(--muted); line-height: 1.5; }
+  .chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .chips button {
+    font: inherit;
+    cursor: pointer;
+    padding: 0.32rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--line);
+  }
+  .chips button[aria-pressed="true"] { color: #05201d; background: var(--accent); border-color: transparent; font-weight: 600; }
+  .sect { margin: 1.2rem 0 0.7rem; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  .btn {
+    font: inherit;
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+    padding: 0.6rem 1rem;
+    border-radius: 11px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--line);
+    transition: background 0.18s ease, transform 0.18s ease;
+  }
+  .btn:hover { background: rgba(255, 255, 255, 0.12); transform: translateY(-1px); }
+  .btn-primary { color: #05201d; background: var(--accent); border-color: transparent; font-weight: 600; }
+  .btn-primary:hover { background: color-mix(in srgb, var(--accent) 88%, #fff); }
+  .btn-row { display: flex; gap: 0.5rem; margin-top: 0.9rem; }
+  .btn-row .btn { flex: 1; }
 
-  .hint { margin: 0.35rem 0 0; font-size: 0.72rem; color: var(--muted); }
+  #toast {
+    position: fixed;
+    left: 50%; bottom: 1.2rem;
+    z-index: 95;
+    transform: translate(-50%, 20px);
+    padding: 0.6rem 1.1rem;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    color: var(--text);
+    background: rgba(12, 14, 19, 0.95);
+    border: 1px solid var(--line);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  #toast.on { opacity: 1; transform: translate(-50%, 0); }
 
-  .actions { display: flex; gap: 0.6rem; margin-top: 1.1rem; }
-  .actions .btn { flex: 1; }
-
-  footer { margin-top: 1.4rem; font-size: 0.72rem; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
 </style>
 </head>
 <body>
-  <main class="card">
-    <img id="avatar" class="avatar" src="https://i.pravatar.cc/220?img=47" alt="Ảnh đại diện của Minh Anh" />
+  <div id="bgLayer" aria-hidden="true"></div>
+  <div id="bgTint" aria-hidden="true"></div>
+  <canvas id="fx" aria-hidden="true"></canvas>
 
-    <p class="handle">@siloneedsleep</p>
-    <h1 id="name" class="name">Minh Anh</h1>
-    <span id="role" class="badge">✧ Designer ✧</span>
+  <div id="enter" role="button" tabindex="0" aria-label="Nhấn để vào trang">
+    <div class="inner">
+      <h2 id="enterTitle">click để vào</h2>
+      <p>nhấn vào bất kỳ đâu</p>
+    </div>
+  </div>
 
-    <p id="bio" class="bio">Yêu thích sự tối giản, cà phê và những bản nhạc chiều. ✨</p>
+  <main class="wrap">
+    <section class="card" id="card">
+      <div class="side">
+        <div class="topbar">
+          <span class="chip" title="Lượt xem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            <span id="views">0</span>
+          </span>
+          <button class="icon-btn" id="shareBtn" type="button" aria-label="Sao chép liên kết trang">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
+          </button>
+        </div>
 
-    <nav id="socials" class="socials" aria-label="Liên kết mạng xã hội"></nav>
+        <div class="avatar-wrap">
+          <span class="ring" id="ring" aria-hidden="true"></span>
+          <img id="avatar" class="avatar" src="https://i.pravatar.cc/240?img=47" alt="Ảnh đại diện" />
+          <span class="status-dot" id="statusDot" data-s="online" aria-hidden="true"></span>
+        </div>
 
-    <div class="divider" role="presentation"></div>
-
-    <button id="toggleBtn" class="btn" type="button" aria-expanded="false" aria-controls="editForm">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
-      </svg>
-      Chỉnh sửa trang cá nhân
-    </button>
-
-    <form id="editForm" class="form">
-      <div class="field">
-        <label for="f-name">Tên hiển thị</label>
-        <input id="f-name" type="text" placeholder="Minh Anh" />
+        <h1 class="name" id="name">Minh Anh</h1>
+        <p class="handle" id="handle">@siloneedsleep</p>
+        <div class="badges" id="badges" aria-label="Huy hiệu"></div>
+        <span class="tagline" id="tagline">✧ Designer ✧</span>
       </div>
-      <div class="field">
-        <label for="f-role">Vai trò / Tagline</label>
-        <input id="f-role" type="text" placeholder="✧ Designer ✧" />
-      </div>
-      <div class="field">
-        <label for="f-bio">Giới thiệu</label>
-        <textarea id="f-bio" rows="3" placeholder="Vài dòng về bạn..."></textarea>
-      </div>
-      <div class="field">
-        <label for="f-avatar">Đường dẫn ảnh đại diện</label>
-        <input id="f-avatar" type="url" placeholder="https://i.pravatar.cc/220?img=47" />
-      </div>
-      <div class="field">
-        <label for="f-links">Liên kết mạng xã hội (mỗi dòng một liên kết)</label>
-        <textarea id="f-links" rows="5" placeholder="https://github.com/silo&#10;mailto:xin.chao@email.com"></textarea>
-        <p class="hint">Hỗ trợ GitHub, Facebook, Instagram, Twitter/X, Discord, TikTok, Email (mailto:) và liên kết thường.</p>
-      </div>
-      <div class="actions">
-        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
-        <button type="button" id="cancelBtn" class="btn">Huỷ</button>
-      </div>
-    </form>
 
-    <footer>Được làm với ♡ — chỉ hiển thị tạm thời, không lưu trên máy chủ.</footer>
+      <div class="main-col">
+        <p class="bio" id="bio">Yêu thích sự tối giản, cà phê và những bản nhạc chiều lúc 2 giờ sáng.</p>
+
+        <nav class="socials" id="socials" aria-label="Mạng xã hội"></nav>
+        <nav class="links" id="linkBtns" aria-label="Liên kết nổi bật"></nav>
+
+        <div class="discord" id="discord">
+          <img id="dcAvatar" src="https://i.pravatar.cc/80?img=47" alt="" />
+          <div>
+            <div class="dc-name" id="dcName">siloneedsleep</div>
+            <div class="dc-act" id="dcAct">Đang nghe Lo-fi Radio</div>
+          </div>
+        </div>
+
+        <div class="player" id="player">
+          <div class="player-top">
+            <div class="viz" id="viz" aria-hidden="true"></div>
+            <div class="track">
+              <b id="trackName">—</b>
+              <span id="trackIdx">0 / 0</span>
+            </div>
+            <div class="pcontrols">
+              <button class="icon-btn" id="prevBtn" type="button" aria-label="Bài trước">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h2v14H6zm4 7 9-7v14z"/></svg>
+              </button>
+              <button class="icon-btn" id="playBtn" type="button" aria-label="Phát hoặc tạm dừng">
+                <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+              </button>
+              <button class="icon-btn" id="nextBtn" type="button" aria-label="Bài sau">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 5h2v14h-2zM5 5l9 7-9 7z"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="seek-row">
+            <span id="tCur">0:00</span>
+            <input type="range" id="seek" min="0" max="1000" value="0" aria-label="Tiến trình bài hát" />
+            <span id="tDur">0:00</span>
+          </div>
+          <div class="vol-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>
+            <input type="range" id="vol" min="0" max="100" value="45" aria-label="Âm lượng" />
+          </div>
+        </div>
+
+        <footer id="footNote">được làm với ♡</footer>
+      </div>
+    </section>
   </main>
 
+  <button id="panelBtn" type="button" aria-controls="panel" aria-expanded="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/><circle cx="12" cy="12" r="3.5"/></svg>
+    Tuỳ chỉnh
+  </button>
+
+  <aside id="panel" aria-label="Bảng tuỳ chỉnh trang cá nhân">
+    <div class="panel-head">
+      <h2>Tuỳ chỉnh trang</h2>
+      <button class="icon-btn" id="closePanel" type="button" aria-label="Đóng bảng tuỳ chỉnh">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button role="tab" data-tab="profile" aria-selected="true">Hồ sơ</button>
+      <button role="tab" data-tab="look" aria-selected="false">Giao diện</button>
+      <button role="tab" data-tab="fx" aria-selected="false">Hiệu ứng</button>
+      <button role="tab" data-tab="audio" aria-selected="false">Nhạc</button>
+      <button role="tab" data-tab="links" aria-selected="false">Liên kết</button>
+      <button role="tab" data-tab="adv" aria-selected="false">Nâng cao</button>
+    </div>
+
+    <div class="panel-body">
+      <!-- Hồ sơ -->
+      <div class="tabpane on" data-pane="profile">
+        <div class="field"><label for="i-name">Tên hiển thị</label><input id="i-name" type="text" data-k="name" /></div>
+        <div class="field"><label for="i-handle">Username (@)</label><input id="i-handle" type="text" data-k="handle" /></div>
+        <div class="field"><label for="i-tagline">Tagline</label><input id="i-tagline" type="text" data-k="tagline" /></div>
+        <div class="field"><label for="i-bio">Giới thiệu</label><textarea id="i-bio" rows="3" data-k="bio"></textarea></div>
+        <div class="field"><label for="i-avatar">Ảnh đại diện (URL)</label><input id="i-avatar" type="url" data-k="avatar" /></div>
+        <div class="field"><label for="i-status">Trạng thái</label>
+          <select id="i-status" data-k="status">
+            <option value="online">Trực tuyến</option>
+            <option value="idle">Chờ</option>
+            <option value="dnd">Không làm ồn</option>
+            <option value="offline">Ngoại tuyến</option>
+            <option value="none">Ẩn</option>
+          </select>
+        </div>
+        <p class="sect">Huy hiệu</p>
+        <div class="chips" id="badgeChips"></div>
+        <p class="sect">Discord presence</p>
+        <div class="check"><input type="checkbox" id="i-dcOn" data-k="dcOn" /><label for="i-dcOn">Hiện thẻ Discord</label></div>
+        <div class="field"><label for="i-dcName">Tên Discord</label><input id="i-dcName" type="text" data-k="dcName" /></div>
+        <div class="field"><label for="i-dcAct">Đang làm gì</label><input id="i-dcAct" type="text" data-k="dcAct" /></div>
+      </div>
+
+      <!-- Giao diện -->
+      <div class="tabpane" data-pane="look">
+        <div class="row2">
+          <div class="field"><label for="i-accent">Màu nhấn</label><input id="i-accent" type="color" data-k="accent" /></div>
+          <div class="field"><label for="i-bgColor">Màu nền</label><input id="i-bgColor" type="color" data-k="bgColor" /></div>
+        </div>
+        <div class="field"><label for="i-layout">Bố cục</label>
+          <select id="i-layout" data-k="layout">
+            <option value="center">Giữa (guns.lol)</option>
+            <option value="split">Hai cột (zyo.lol)</option>
+          </select>
+        </div>
+        <div class="field"><label for="i-font">Phông chữ</label>
+          <select id="i-font" data-k="font"><option value="sans">Be Vietnam Pro</option><option value="mono">JetBrains Mono</option></select>
+        </div>
+        <div class="field"><label for="i-nameFx">Hiệu ứng tên</label>
+          <select id="i-nameFx" data-k="nameFx">
+            <option value="none">Không</option>
+            <option value="glow">Phát sáng</option>
+            <option value="gradient">Gradient chạy</option>
+            <option value="rainbow">Đổi màu</option>
+            <option value="type">Máy chữ</option>
+          </select>
+        </div>
+        <div class="field"><label for="i-avatarShape">Kiểu ảnh đại diện</label>
+          <select id="i-avatarShape" data-k="avatarShape"><option value="circle">Tròn</option><option value="square">Vuông bo</option></select>
+        </div>
+        <div class="check"><input type="checkbox" id="i-ring" data-k="ring" /><label for="i-ring">Vòng xoay quanh avatar</label></div>
+        <div class="check"><input type="checkbox" id="i-tilt" data-k="tilt" /><label for="i-tilt">Card nghiêng theo chuột</label></div>
+        <div class="check"><input type="checkbox" id="i-typeBio" data-k="typeBio" /><label for="i-typeBio">Bio kiểu máy chữ</label></div>
+
+        <p class="sect">Card</p>
+        <div class="field"><label for="i-blur">Độ mờ kính: <span id="v-blur"></span>px</label><input id="i-blur" type="range" min="0" max="40" data-k="blur" /></div>
+        <div class="field"><label for="i-alpha">Độ trong: <span id="v-alpha"></span>%</label><input id="i-alpha" type="range" min="0" max="30" data-k="alpha" /></div>
+        <div class="field"><label for="i-radius">Bo góc: <span id="v-radius"></span>px</label><input id="i-radius" type="range" min="0" max="40" data-k="radius" /></div>
+        <div class="field"><label for="i-glow">Viền sáng: <span id="v-glow"></span>px</label><input id="i-glow" type="range" min="0" max="90" data-k="glow" /></div>
+
+        <p class="sect">Nền</p>
+        <div class="field"><label for="i-bgUrl">Ảnh hoặc video nền (URL)</label><input id="i-bgUrl" type="url" data-k="bgUrl" placeholder="để trống = gradient" /></div>
+        <div class="field"><label for="i-bgBlur">Làm mờ nền: <span id="v-bgBlur"></span>px</label><input id="i-bgBlur" type="range" min="0" max="30" data-k="bgBlur" /></div>
+        <div class="field"><label for="i-bgDim">Tối nền: <span id="v-bgDim"></span>%</label><input id="i-bgDim" type="range" min="0" max="90" data-k="bgDim" /></div>
+      </div>
+
+      <!-- Hiệu ứng -->
+      <div class="tabpane" data-pane="fx">
+        <div class="field"><label for="i-particles">Hiệu ứng hạt</label>
+          <select id="i-particles" data-k="particles">
+            <option value="none">Không</option>
+            <option value="snow">Tuyết</option>
+            <option value="rain">Mưa</option>
+            <option value="stars">Sao lấp lánh</option>
+            <option value="sparkles">Đốm sáng</option>
+            <option value="hearts">Trái tim</option>
+            <option value="bubbles">Bong bóng</option>
+            <option value="matrix">Matrix</option>
+          </select>
+        </div>
+        <div class="field"><label for="i-pCount">Mật độ: <span id="v-pCount"></span></label><input id="i-pCount" type="range" min="10" max="220" data-k="pCount" /></div>
+        <div class="check"><input type="checkbox" id="i-cursor" data-k="cursor" /><label for="i-cursor">Con trỏ tuỳ chỉnh + vệt sáng</label></div>
+        <div class="check"><input type="checkbox" id="i-enterOn" data-k="enterOn" /><label for="i-enterOn">Màn hình "click để vào"</label></div>
+        <div class="field"><label for="i-enterText">Chữ trên màn hình mở đầu</label><input id="i-enterText" type="text" data-k="enterText" /></div>
+        <div class="field"><label for="i-titleText">Tiêu đề tab (ngăn bằng |)</label><input id="i-titleText" type="text" data-k="titleText" />
+          <p class="hint">Nhiều đoạn sẽ chạy luân phiên trên thanh tiêu đề trình duyệt.</p>
+        </div>
+        <div class="field"><label for="i-footNote">Chữ chân trang</label><input id="i-footNote" type="text" data-k="footNote" /></div>
+      </div>
+
+      <!-- Nhạc -->
+      <div class="tabpane" data-pane="audio">
+        <div class="check"><input type="checkbox" id="i-audioOn" data-k="audioOn" /><label for="i-audioOn">Hiện trình phát nhạc</label></div>
+        <div class="check"><input type="checkbox" id="i-autoplay" data-k="autoplay" /><label for="i-autoplay">Tự phát sau khi vào trang</label></div>
+        <div class="field"><label for="i-volume">Âm lượng mặc định: <span id="v-volume"></span>%</label><input id="i-volume" type="range" min="0" max="100" data-k="volume" /></div>
+        <div class="field"><label for="i-tracks">Danh sách nhạc</label>
+          <textarea id="i-tracks" rows="5" data-k="tracksRaw" placeholder="Tên bài | https://.../nhac.mp3"></textarea>
+          <p class="hint">Mỗi dòng một bài: <em>Tên | URL mp3</em>. Dòng <em>synth</em> dùng bản nhạc ambient tạo trực tiếp bằng Web Audio (không cần file).</p>
+        </div>
+      </div>
+
+      <!-- Liên kết -->
+      <div class="tabpane" data-pane="links">
+        <div class="field"><label for="i-socials">Icon mạng xã hội</label>
+          <textarea id="i-socials" rows="7" data-k="socialsRaw"></textarea>
+          <p class="hint">Mỗi dòng một liên kết. Tự nhận diện GitHub, Instagram, X, Discord, TikTok, YouTube, Spotify, Telegram, Twitch, Facebook, Steam, Roblox, email.</p>
+        </div>
+        <div class="field"><label for="i-buttons">Nút liên kết lớn</label>
+          <textarea id="i-buttons" rows="5" data-k="buttonsRaw" placeholder="Tên nút | https://..."></textarea>
+        </div>
+      </div>
+
+      <!-- Nâng cao -->
+      <div class="tabpane" data-pane="adv">
+        <p class="hint">Cấu hình được lưu trong trình duyệt này. Xuất JSON để sao lưu hoặc chuyển sang máy khác.</p>
+        <div class="field"><label for="i-json">Cấu hình JSON</label><textarea id="i-json" rows="10"></textarea></div>
+        <div class="btn-row">
+          <button class="btn" id="exportBtn" type="button">Xuất &amp; sao chép</button>
+          <button class="btn btn-primary" id="importBtn" type="button">Nhập JSON</button>
+        </div>
+        <div class="btn-row">
+          <button class="btn" id="resetBtn" type="button">Khôi phục mặc định</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div id="cursor" class="off" aria-hidden="true"></div>
+  <div id="toast" role="status" aria-live="polite"></div>
+
 <script>
-  // ----- Dữ liệu mẫu (không có backend) -----
-  var profile = {
+(function () {
+  "use strict";
+
+  var KEY = "silo.profile.v2";
+  var $ = function (id) { return document.getElementById(id); };
+
+  var DEFAULTS = {
     name: "Minh Anh",
-    role: "✧ Designer ✧",
-    bio: "Yêu thích sự tối giản, cà phê và những bản nhạc chiều. ✨",
-    avatar: "https://i.pravatar.cc/220?img=47",
-    links: [
+    handle: "siloneedsleep",
+    tagline: "✧ Designer ✧",
+    bio: "Yêu thích sự tối giản, cà phê và những bản nhạc chiều lúc 2 giờ sáng.",
+    avatar: "https://i.pravatar.cc/240?img=47",
+    status: "online",
+    badges: ["verified", "premium", "dev"],
+    dcOn: true,
+    dcName: "siloneedsleep",
+    dcAct: "Đang nghe Lo-fi Radio",
+    accent: "#4fd1c5",
+    bgColor: "#07080b",
+    layout: "center",
+    font: "sans",
+    nameFx: "glow",
+    avatarShape: "circle",
+    ring: true,
+    tilt: true,
+    typeBio: false,
+    blur: 18,
+    alpha: 5,
+    radius: 24,
+    glow: 34,
+    bgUrl: "",
+    bgBlur: 6,
+    bgDim: 45,
+    particles: "snow",
+    pCount: 70,
+    cursor: true,
+    enterOn: true,
+    enterText: "click để vào",
+    titleText: "@siloneedsleep | xin chào ✧",
+    footNote: "được làm với ♡",
+    audioOn: true,
+    autoplay: true,
+    volume: 45,
+    tracksRaw: "Ambient tổng hợp | synth",
+    socialsRaw: [
       "https://github.com/siloneedsleep",
-      "https://facebook.com/siloneedsleep",
       "https://instagram.com/siloneedsleep",
       "https://x.com/siloneedsleep",
       "https://discord.com/users/siloneedsleep",
-      "https://tiktok.com/@siloneedsleep",
-      "mailto:xin.chao@email.com",
-      "https://siloneedsleep.dev"
-    ]
+      "https://open.spotify.com/user/siloneedsleep",
+      "https://t.me/siloneedsleep",
+      "mailto:xin.chao@email.com"
+    ].join("\n"),
+    buttonsRaw: "Portfolio | https://siloneedsleep.dev\nCommission mở | https://siloneedsleep.dev/commission"
   };
 
-  // ----- Bộ icon SVG -----
+  var cfg = load();
+
+  function load() {
+    var out = {};
+    for (var k in DEFAULTS) out[k] = DEFAULTS[k];
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) {
+        var saved = JSON.parse(raw);
+        for (var j in saved) if (j in DEFAULTS) out[j] = saved[j];
+      }
+    } catch (e) {}
+    return out;
+  }
+
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(cfg)); } catch (e) {}
+  }
+
+  function toast(msg) {
+    var t = $("toast");
+    t.textContent = msg;
+    t.classList.add("on");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { t.classList.remove("on"); }, 1800);
+  }
+
+  /* ================= ICON ================= */
   var ICONS = {
     github: '<path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.9a3.4 3.4 0 0 0-.9-2.6c3-.3 6.2-1.5 6.2-6.7A5.2 5.2 0 0 0 19 4.8 4.8 4.8 0 0 0 18.9 1S17.6.6 15 2.4a12.3 12.3 0 0 0-6.6 0C5.8.6 4.5 1 4.5 1A4.8 4.8 0 0 0 4.4 4.8 5.2 5.2 0 0 0 3 8.5c0 5.2 3.2 6.4 6.2 6.7a3.4 3.4 0 0 0-.9 2.6V22"/>',
     facebook: '<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>',
-    instagram: '<rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"/>',
-    twitter: '<path d="M4 3l7.2 9.6L4.4 21h2.4l5.5-6.6L17 21h3l-7.4-9.9L19.4 3H17l-5.1 6.1L8 3z" fill="currentColor" stroke="none"/>',
-    discord: '<path d="M9 12a1 1 0 1 0 0-.01M15 12a1 1 0 1 0 0-.01"/><path d="M8.5 5.5A12 12 0 0 1 12 5a12 12 0 0 1 3.5.5L17 4s3 1 4 4c1 3 1 7 0 10-2 1.5-4 2-4 2l-1-2m-8 0-1 2s-2-.5-4-2c-1-3-1-7 0-10 1-3 4-4 4-4z"/>',
-    tiktok: '<path d="M14 3v10.5a3.5 3.5 0 1 1-3.5-3.5c.4 0 .7 0 1 .1"/><path d="M14 3c.5 2.8 2.4 4.5 5 4.7"/>',
+    instagram: '<rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/>',
+    x: '<path d="M4 3l7.2 9.6L4.4 21h2.4l5.5-6.6L17 21h3l-7.4-9.9L19.4 3H17l-5.1 6.1L8 3z" fill="currentColor" stroke="none"/>',
+    discord: '<path d="M9 12h.01M15 12h.01"/><path d="M8.5 5.5A12 12 0 0 1 12 5a12 12 0 0 1 3.5.5L17 4s3 1 4 4c1 3 1 7 0 10-2 1.5-4 2-4 2l-1-2m-8 0-1 2s-2-.5-4-2c-1-3-1-7 0-10 1-3 4-4 4-4z"/>',
+    tiktok: '<path d="M14 3v10.5a3.5 3.5 0 1 1-3.5-3.5c.35 0 .68.05 1 .14"/><path d="M14 3c.5 2.8 2.4 4.5 5 4.7"/>',
+    youtube: '<rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10 9 5 3-5 3z"/>',
+    spotify: '<circle cx="12" cy="12" r="9"/><path d="M7.5 9.5c3-.8 6.2-.4 8.6 1M8 13c2.4-.6 5-.3 7 .9M8.5 16c1.9-.4 3.8-.2 5.4.7"/>',
+    telegram: '<path d="m21 4-9.5 16-2-6.5L3 11z"/><path d="M21 4 9.5 13.5"/>',
+    twitch: '<path d="M4 3h16v11l-4 4h-3l-3 3H8v-3H4z"/><path d="M11 8v4M15 8v4"/>',
+    steam: '<circle cx="12" cy="12" r="9"/><circle cx="15" cy="9" r="2.4"/><path d="M3.4 15.2 9 17.4"/><circle cx="8.6" cy="16.4" r="2"/>',
+    roblox: '<path d="M6 3 3 18l15 3 3-15z"/><rect x="9.5" y="9" width="5" height="5" transform="rotate(-12 12 11.5)"/>',
+    reddit: '<circle cx="12" cy="13" r="7"/><path d="M12 6V3l4 1"/><path d="M9.5 12.5h.01M14.5 12.5h.01"/><path d="M9.5 16c1.6 1.1 3.4 1.1 5 0"/>',
     email: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2.5 6 9.5 7 9.5-7"/>',
     link: '<path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/>'
   };
 
   var LABELS = {
-    github: "GitHub", facebook: "Facebook", instagram: "Instagram",
-    twitter: "Twitter / X", discord: "Discord", tiktok: "TikTok",
-    email: "Email", link: "Liên kết"
+    github: "GitHub", facebook: "Facebook", instagram: "Instagram", x: "X / Twitter",
+    discord: "Discord", tiktok: "TikTok", youtube: "YouTube", spotify: "Spotify",
+    telegram: "Telegram", twitch: "Twitch", steam: "Steam", roblox: "Roblox",
+    reddit: "Reddit", email: "Email", link: "Liên kết"
   };
 
-  function detectType(url) {
+  var BADGES = {
+    verified: { label: "Đã xác minh", svg: '<path d="m9 12 2 2 4-4"/><path d="M12 3l2.4 1.6 2.9-.2.9 2.8 2.3 1.8-1.2 2.6 1.2 2.6-2.3 1.8-.9 2.8-2.9-.2L12 21l-2.4-1.6-2.9.2-.9-2.8L3.5 15l1.2-2.6L3.5 9.8l2.3-1.8.9-2.8 2.9.2z"/>' },
+    premium: { label: "Premium", svg: '<path d="M3 8l4.5 3L12 4l4.5 7L21 8l-2 11H5z"/>' },
+    staff: { label: "Nhân sự", svg: '<path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/>' },
+    dev: { label: "Nhà phát triển", svg: '<path d="m8 8-4 4 4 4M16 8l4 4-4 4M13 5l-2 14"/>' },
+    donor: { label: "Nhà tài trợ", svg: '<path d="M12 20s-7-4.4-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.6-7 9-7 9z"/>' },
+    early: { label: "Thành viên sớm", svg: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>' },
+    bug: { label: "Bắt lỗi", svg: '<circle cx="12" cy="13" r="5"/><path d="M12 8V5M7 13H3m18 0h-4M8 18l-2 2m10-2 2 2M8 8 6 6m10 2 2-2"/>' },
+    winner: { label: "Vô địch", svg: '<path d="M8 21h8m-4-4v4M7 4h10v4a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>' }
+  };
+
+  function detect(url) {
     var u = url.toLowerCase();
-    if (u.indexOf("mailto:") === 0 || u.indexOf("@") > -1 && u.indexOf("http") !== 0) return "email";
+    if (u.indexOf("mailto:") === 0) return "email";
     if (u.indexOf("github.com") > -1) return "github";
     if (u.indexOf("facebook.com") > -1 || u.indexOf("fb.com") > -1) return "facebook";
     if (u.indexOf("instagram.com") > -1) return "instagram";
-    if (u.indexOf("twitter.com") > -1 || u.indexOf("x.com") > -1) return "twitter";
+    if (u.indexOf("twitter.com") > -1 || u.indexOf("//x.com") > -1 || u.indexOf(".x.com") > -1) return "x";
     if (u.indexOf("discord") > -1) return "discord";
     if (u.indexOf("tiktok.com") > -1) return "tiktok";
+    if (u.indexOf("youtube.com") > -1 || u.indexOf("youtu.be") > -1) return "youtube";
+    if (u.indexOf("spotify.com") > -1) return "spotify";
+    if (u.indexOf("t.me") > -1 || u.indexOf("telegram") > -1) return "telegram";
+    if (u.indexOf("twitch.tv") > -1) return "twitch";
+    if (u.indexOf("steamcommunity") > -1 || u.indexOf("steampowered") > -1) return "steam";
+    if (u.indexOf("roblox.com") > -1) return "roblox";
+    if (u.indexOf("reddit.com") > -1) return "reddit";
     return "link";
   }
 
   function normalize(url) {
-    var u = url.trim();
+    var u = (url || "").trim();
     if (!u) return "";
     if (u.indexOf("mailto:") === 0 || /^https?:\/\//i.test(u)) return u;
-    if (u.indexOf("@") > -1 && u.indexOf(".") > -1) return "mailto:" + u;
+    if (u.indexOf("@") > -1 && u.indexOf(".") > -1 && u.indexOf(" ") === -1) return "mailto:" + u;
     return "https://" + u;
   }
 
-  function render() {
-    document.getElementById("name").textContent = profile.name;
-    document.getElementById("role").textContent = profile.role;
-    document.getElementById("bio").textContent = profile.bio;
-    var img = document.getElementById("avatar");
-    img.src = profile.avatar;
-    img.alt = "Ảnh đại diện của " + profile.name;
+  function svg(inner, w) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (w || 1.8) +
+      '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + inner + "</svg>";
+  }
 
-    var nav = document.getElementById("socials");
+  function parsePairs(raw) {
+    return String(raw || "").split("\n").map(function (line) {
+      var s = line.trim();
+      if (!s) return null;
+      var i = s.indexOf("|");
+      if (i === -1) return { title: s, url: s };
+      return { title: s.slice(0, i).trim(), url: s.slice(i + 1).trim() };
+    }).filter(Boolean);
+  }
+
+  /* ================= HIỂN THỊ ================= */
+  var typers = [];
+  function clearTypers() {
+    typers.forEach(function (id) { clearTimeout(id); clearInterval(id); });
+    typers = [];
+  }
+
+  function typeInto(el, text, speed, caret) {
+    var i = 0;
+    el.textContent = "";
+    var span = null;
+    if (caret) {
+      span = document.createElement("span");
+      span.className = "caret";
+      span.textContent = "|";
+      el.appendChild(span);
+    }
+    var id = setInterval(function () {
+      if (i >= text.length) { clearInterval(id); return; }
+      var ch = document.createTextNode(text.charAt(i++));
+      el.insertBefore(ch, span);
+    }, speed);
+    typers.push(id);
+  }
+
+  function render() {
+    var r = document.documentElement.style;
+    r.setProperty("--accent", cfg.accent);
+    r.setProperty("--bg", cfg.bgColor);
+    r.setProperty("--card-blur", cfg.blur + "px");
+    r.setProperty("--card-alpha", (Number(cfg.alpha) / 100).toFixed(3));
+    r.setProperty("--radius", cfg.radius + "px");
+    r.setProperty("--glow", cfg.glow + "px");
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", cfg.bgColor);
+
+    document.body.className =
+      (cfg.layout === "split" ? "layout-split " : "layout-center ") +
+      (cfg.avatarShape === "square" ? "avatar-square " : "") +
+      (cfg.font === "mono" ? "mono-font " : "") +
+      (cfg.cursor ? "no-cursor" : "");
+
+    clearTypers();
+
+    // Nền
+    var bg = $("bgLayer");
+    bg.innerHTML = "";
+    var url = (cfg.bgUrl || "").trim();
+    if (url) {
+      var isVideo = /\.(mp4|webm|ogv)(\?|$)/i.test(url);
+      var node;
+      if (isVideo) {
+        node = document.createElement("video");
+        node.src = url;
+        node.autoplay = true; node.loop = true; node.muted = true; node.playsInline = true;
+      } else {
+        node = document.createElement("img");
+        node.src = url;
+        node.alt = "";
+      }
+      node.style.filter = "blur(" + cfg.bgBlur + "px)";
+      node.style.transform = "scale(1.06)";
+      bg.appendChild(node);
+    }
+    $("bgTint").style.opacity = (Number(cfg.bgDim) / 100).toFixed(2);
+
+    // Hồ sơ
+    var nameEl = $("name");
+    nameEl.className = "name fx-" + cfg.nameFx;
+    if (cfg.nameFx === "type") typeInto(nameEl, cfg.name, 85, true);
+    else nameEl.textContent = cfg.name;
+
+    $("handle").textContent = "@" + String(cfg.handle || "").replace(/^@/, "");
+    $("tagline").textContent = cfg.tagline;
+    $("tagline").style.display = cfg.tagline ? "" : "none";
+
+    var bioEl = $("bio");
+    if (cfg.typeBio) typeInto(bioEl, cfg.bio, 26, false);
+    else bioEl.textContent = cfg.bio;
+
+    var av = $("avatar");
+    av.src = cfg.avatar;
+    av.alt = "Ảnh đại diện của " + cfg.name;
+    $("ring").style.display = cfg.ring ? "" : "none";
+    $("statusDot").setAttribute("data-s", cfg.status);
+    $("footNote").textContent = cfg.footNote;
+
+    // Huy hiệu
+    var bd = $("badges");
+    bd.innerHTML = "";
+    (cfg.badges || []).forEach(function (id) {
+      var b = BADGES[id];
+      if (!b) return;
+      var s = document.createElement("span");
+      s.title = b.label;
+      s.setAttribute("aria-label", b.label);
+      s.innerHTML = svg(b.svg, 1.7);
+      bd.appendChild(s);
+    });
+
+    // Mạng xã hội
+    var nav = $("socials");
     nav.innerHTML = "";
-    profile.links.forEach(function (raw) {
-      var href = normalize(raw);
+    String(cfg.socialsRaw || "").split("\n").forEach(function (line) {
+      var href = normalize(line);
       if (!href) return;
-      var type = detectType(href);
+      var t = detect(href);
       var a = document.createElement("a");
       a.href = href;
-      a.title = LABELS[type];
-      a.setAttribute("aria-label", LABELS[type]);
-      if (type !== "email") { a.target = "_blank"; a.rel = "noopener noreferrer"; }
-      a.innerHTML =
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
-        'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[type] + "</svg>";
+      a.setAttribute("data-tip", LABELS[t]);
+      a.setAttribute("aria-label", LABELS[t]);
+      if (t !== "email") { a.target = "_blank"; a.rel = "noopener noreferrer"; }
+      a.innerHTML = svg(ICONS[t]);
       nav.appendChild(a);
+    });
+
+    // Nút liên kết
+    var lb = $("linkBtns");
+    lb.innerHTML = "";
+    parsePairs(cfg.buttonsRaw).forEach(function (p) {
+      var href = normalize(p.url);
+      if (!href) return;
+      var a = document.createElement("a");
+      a.href = href;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.innerHTML = "<span>" + p.title + "</span>" + svg('<path d="M7 17 17 7M9 7h8v8"/>', 2);
+      lb.appendChild(a);
+    });
+
+    // Discord
+    $("discord").className = "discord" + (cfg.dcOn ? " on" : "");
+    $("dcName").textContent = cfg.dcName;
+    $("dcAct").textContent = cfg.dcAct;
+    $("dcAvatar").src = cfg.avatar;
+
+    // Nhạc
+    $("player").className = "player" + (cfg.audioOn ? " on" : "");
+    audio.setTracks(parsePairs(cfg.tracksRaw));
+    audio.setVolume(Number(cfg.volume) / 100);
+    $("vol").value = cfg.volume;
+
+    // Mở đầu
+    $("enterTitle").textContent = cfg.enterText;
+
+    fx.start(cfg.particles, Number(cfg.pCount));
+    cursorFx.toggle(cfg.cursor);
+    titleFx.start(cfg.titleText);
+    tilt.toggle(cfg.tilt);
+  }
+
+  /* ================= HẠT NỀN ================= */
+  var fx = (function () {
+    var cv = $("fx"), ctx = cv.getContext("2d");
+    var parts = [], type = "none", count = 70, raf = null, W = 0, H = 0;
+    var GLYPHS = "アイウエオカキクケコサシスセソタチツテト01".split("");
+
+    function resize() {
+      var d = Math.min(window.devicePixelRatio || 1, 2);
+      W = cv.width = Math.floor(innerWidth * d);
+      H = cv.height = Math.floor(innerHeight * d);
+      cv.style.width = innerWidth + "px";
+      cv.style.height = innerHeight + "px";
+      ctx.setTransform(d, 0, 0, d, 0, 0);
+    }
+
+    function rnd(a, b) { return a + Math.random() * (b - a); }
+
+    function make() {
+      var w = innerWidth, h = innerHeight;
+      var p = { x: rnd(0, w), y: rnd(0, h), a: rnd(0.25, 0.9), r: rnd(1, 3), vx: 0, vy: 0, s: rnd(0, 6.28), g: GLYPHS[Math.floor(rnd(0, GLYPHS.length))] };
+      if (type === "snow") { p.vy = rnd(0.25, 0.9); p.vx = rnd(-0.25, 0.25); p.r = rnd(1, 3); }
+      else if (type === "rain") { p.vy = rnd(6, 12); p.vx = rnd(-0.6, -0.1); p.r = rnd(6, 16); }
+      else if (type === "stars") { p.vy = rnd(-0.05, 0.05); p.vx = rnd(-0.05, 0.05); p.r = rnd(0.6, 1.8); }
+      else if (type === "sparkles") { p.vy = rnd(-0.4, -0.1); p.vx = rnd(-0.3, 0.3); p.r = rnd(1, 2.6); }
+      else if (type === "hearts") { p.vy = rnd(-1.1, -0.4); p.vx = rnd(-0.3, 0.3); p.r = rnd(7, 15); }
+      else if (type === "bubbles") { p.vy = rnd(-1.4, -0.5); p.vx = rnd(-0.3, 0.3); p.r = rnd(3, 11); }
+      else if (type === "matrix") { p.vy = rnd(2, 5.5); p.r = rnd(11, 16); p.y = rnd(-h, 0); }
+      return p;
+    }
+
+    function accent() {
+      return getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#4fd1c5";
+    }
+
+    function frame(t) {
+      var w = innerWidth, h = innerHeight, col = accent();
+      ctx.clearRect(0, 0, w, h);
+      for (var i = 0; i < parts.length; i++) {
+        var p = parts[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        if (type === "snow") p.x += Math.sin((t / 1400) + p.s) * 0.35;
+        if (type === "bubbles") p.x += Math.sin((t / 900) + p.s) * 0.5;
+
+        if (p.y > h + 24) { p.y = -20; p.x = rnd(0, w); }
+        if (p.y < -24) { p.y = h + 20; p.x = rnd(0, w); }
+        if (p.x > w + 24) p.x = -20;
+        if (p.x < -24) p.x = w + 20;
+
+        ctx.save();
+        if (type === "rain") {
+          ctx.strokeStyle = "rgba(190,215,255," + (p.a * 0.5).toFixed(2) + ")";
+          ctx.lineWidth = 1.1;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(p.x + p.vx * 1.6, p.y + p.r);
+          ctx.stroke();
+        } else if (type === "stars") {
+          var tw = 0.35 + Math.abs(Math.sin(t / 700 + p.s)) * 0.65;
+          ctx.fillStyle = "rgba(255,255,255," + (p.a * tw).toFixed(2) + ")";
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
+        } else if (type === "sparkles") {
+          ctx.fillStyle = col;
+          ctx.globalAlpha = 0.35 + Math.abs(Math.sin(t / 500 + p.s)) * 0.55;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y - p.r * 2.4); ctx.lineTo(p.x + p.r * 0.7, p.y);
+          ctx.lineTo(p.x, p.y + p.r * 2.4); ctx.lineTo(p.x - p.r * 0.7, p.y);
+          ctx.closePath(); ctx.fill();
+        } else if (type === "hearts") {
+          ctx.globalAlpha = p.a * 0.75;
+          ctx.fillStyle = col;
+          ctx.font = p.r + "px system-ui";
+          ctx.fillText("♥", p.x, p.y);
+        } else if (type === "bubbles") {
+          ctx.globalAlpha = p.a * 0.5;
+          ctx.strokeStyle = col;
+          ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.stroke();
+        } else if (type === "matrix") {
+          ctx.globalAlpha = p.a;
+          ctx.fillStyle = col;
+          ctx.font = p.r + "px " + "monospace";
+          if (Math.random() < 0.03) p.g = GLYPHS[Math.floor(rnd(0, GLYPHS.length))];
+          ctx.fillText(p.g, p.x, p.y);
+        } else {
+          ctx.globalAlpha = p.a * 0.85;
+          ctx.fillStyle = "#ffffff";
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
+        }
+        ctx.restore();
+      }
+      raf = requestAnimationFrame(frame);
+    }
+
+    function start(t, n) {
+      type = t || "none";
+      count = n || 70;
+      if (raf) cancelAnimationFrame(raf);
+      raf = null;
+      resize();
+      ctx.clearRect(0, 0, innerWidth, innerHeight);
+      parts = [];
+      if (type === "none") return;
+      for (var i = 0; i < count; i++) parts.push(make());
+      raf = requestAnimationFrame(frame);
+    }
+
+    addEventListener("resize", function () { resize(); });
+    return { start: start };
+  })();
+
+  /* ================= CON TRỎ ================= */
+  var cursorFx = (function () {
+    var dot = $("cursor"), trails = [], N = 6, on = false;
+    for (var i = 0; i < N; i++) {
+      var d = document.createElement("div");
+      d.className = "trail off";
+      d.style.opacity = String(0.5 - i * 0.07);
+      document.body.appendChild(d);
+      trails.push({ el: d, x: 0, y: 0 });
+    }
+    var mx = -100, my = -100;
+
+    addEventListener("pointermove", function (e) { mx = e.clientX; my = e.clientY; });
+
+    (function loop() {
+      if (on) {
+        dot.style.transform = "translate(" + mx + "px," + my + "px) translate(-50%,-50%)";
+        var px = mx, py = my;
+        trails.forEach(function (t) {
+          t.x += (px - t.x) * 0.32;
+          t.y += (py - t.y) * 0.32;
+          t.el.style.transform = "translate(" + t.x + "px," + t.y + "px) translate(-50%,-50%)";
+          px = t.x; py = t.y;
+        });
+      }
+      requestAnimationFrame(loop);
+    })();
+
+    return {
+      toggle: function (v) {
+        on = !!v;
+        dot.classList.toggle("off", !on);
+        trails.forEach(function (t) { t.el.classList.toggle("off", !on); });
+      }
+    };
+  })();
+
+  /* ================= NGHIÊNG CARD ================= */
+  var tilt = (function () {
+    var card = $("card"), on = false;
+    addEventListener("pointermove", function (e) {
+      if (!on) return;
+      var r = card.getBoundingClientRect();
+      var cx = (e.clientX - r.left) / r.width - 0.5;
+      var cy = (e.clientY - r.top) / r.height - 0.5;
+      card.style.transform = "perspective(900px) rotateY(" + (cx * 7).toFixed(2) + "deg) rotateX(" + (-cy * 7).toFixed(2) + "deg)";
+    });
+    addEventListener("pointerleave", function () { card.style.transform = ""; });
+    return {
+      toggle: function (v) {
+        on = !!v;
+        if (!on) card.style.transform = "";
+      }
+    };
+  })();
+
+  /* ================= TIÊU ĐỀ TAB ================= */
+  var titleFx = (function () {
+    var id = null;
+    return {
+      start: function (raw) {
+        if (id) clearInterval(id);
+        var parts = String(raw || "").split("|").map(function (s) { return s.trim(); }).filter(Boolean);
+        if (!parts.length) { document.title = "@" + cfg.handle; return; }
+        document.title = parts[0];
+        if (parts.length < 2) return;
+        var i = 0;
+        id = setInterval(function () {
+          i = (i + 1) % parts.length;
+          document.title = parts[i];
+        }, 2600);
+      }
+    };
+  })();
+
+  /* ================= NHẠC ================= */
+  var audio = (function () {
+    var el = new Audio();
+    el.crossOrigin = "anonymous";
+    el.preload = "none";
+
+    var tracks = [], idx = 0, playing = false, vol = 0.45;
+    var actx = null, analyser = null, srcNode = null, data = null;
+    var synth = null, synthStart = 0;
+    var bars = [];
+
+    for (var i = 0; i < 9; i++) {
+      var b = document.createElement("i");
+      $("viz").appendChild(b);
+      bars.push(b);
+    }
+
+    function ensureCtx() {
+      if (!actx) {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return null;
+        actx = new AC();
+      }
+      if (actx.state === "suspended") actx.resume();
+      return actx;
+    }
+
+    function ensureAnalyser() {
+      var c = ensureCtx();
+      if (!c || analyser) return analyser;
+      analyser = c.createAnalyser();
+      analyser.fftSize = 64;
+      analyser.smoothingTimeConstant = 0.75;
+      data = new Uint8Array(analyser.frequencyBinCount);
+      analyser.connect(c.destination);
+      return analyser;
+    }
+
+    function isSynth(t) { return !t || /^synth$/i.test(t.url || ""); }
+
+    function startSynth() {
+      var c = ensureCtx();
+      if (!c) return;
+      var an = ensureAnalyser();
+      var master = c.createGain();
+      master.gain.value = vol * 0.5;
+      master.connect(an || c.destination);
+
+      var notes = [174.6, 220, 261.6, 329.6];
+      var oscs = notes.map(function (f, i) {
+        var o = c.createOscillator();
+        var g = c.createGain();
+        o.type = i % 2 ? "sine" : "triangle";
+        o.frequency.value = f;
+        g.gain.value = 0;
+        o.connect(g); g.connect(master);
+        o.start();
+        return { o: o, g: g, f: f };
+      });
+
+      var lfo = c.createOscillator();
+      var lfoGain = c.createGain();
+      lfo.frequency.value = 0.08;
+      lfoGain.gain.value = 0.09;
+      lfo.connect(lfoGain);
+      oscs.forEach(function (n) { lfoGain.connect(n.g.gain); });
+      lfo.start();
+
+      var step = 0;
+      var seq = setInterval(function () {
+        var now = c.currentTime;
+        oscs.forEach(function (n, i) {
+          var target = (i === step % oscs.length) ? 0.13 : 0.035;
+          n.g.gain.cancelScheduledValues(now);
+          n.g.gain.linearRampToValueAtTime(target, now + 1.1);
+        });
+        step++;
+      }, 2400);
+
+      oscs.forEach(function (n, i) {
+        n.g.gain.linearRampToValueAtTime(i === 0 ? 0.13 : 0.035, c.currentTime + 1.4);
+      });
+
+      synth = { master: master, oscs: oscs, lfo: lfo, seq: seq };
+      synthStart = Date.now();
+    }
+
+    function stopSynth() {
+      if (!synth) return;
+      clearInterval(synth.seq);
+      try {
+        synth.oscs.forEach(function (n) { n.o.stop(); });
+        synth.lfo.stop();
+        synth.master.disconnect();
+      } catch (e) {}
+      synth = null;
+    }
+
+    function connectEl() {
+      var c = ensureCtx();
+      if (!c || srcNode) return;
+      try {
+        var an = ensureAnalyser();
+        srcNode = c.createMediaElementSource(el);
+        srcNode.connect(an);
+      } catch (e) {
+        srcNode = null;
+      }
+    }
+
+    function fmt(s) {
+      if (!isFinite(s) || s < 0) s = 0;
+      var m = Math.floor(s / 60), ss = Math.floor(s % 60);
+      return m + ":" + (ss < 10 ? "0" : "") + ss;
+    }
+
+    function paint() {
+      var t = tracks[idx];
+      $("trackName").textContent = t ? t.title : "—";
+      $("trackIdx").textContent = (tracks.length ? idx + 1 : 0) + " / " + tracks.length;
+      $("playIcon").innerHTML = playing
+        ? '<path d="M7 5h4v14H7zM13 5h4v14h-4z"/>'
+        : '<path d="M8 5v14l11-7z"/>';
+    }
+
+    function loadTrack(i, autoplay) {
+      if (!tracks.length) return;
+      idx = (i + tracks.length) % tracks.length;
+      stopSynth();
+      el.pause();
+      var t = tracks[idx];
+      if (isSynth(t)) {
+        el.removeAttribute("src");
+        $("tDur").textContent = "∞";
+      } else {
+        el.src = t.url;
+        el.load();
+      }
+      paint();
+      if (autoplay) play();
+    }
+
+    function play() {
+      var t = tracks[idx];
+      if (!t) return;
+      if (isSynth(t)) {
+        if (!synth) startSynth();
+        playing = true;
+        paint();
+        return;
+      }
+      connectEl();
+      el.volume = vol;
+      var p = el.play();
+      if (p && p.catch) p.catch(function () { playing = false; paint(); });
+      playing = true;
+      paint();
+    }
+
+    function pause() {
+      stopSynth();
+      el.pause();
+      playing = false;
+      paint();
+    }
+
+    el.addEventListener("timeupdate", function () {
+      if (!el.duration) return;
+      $("seek").value = String(Math.round((el.currentTime / el.duration) * 1000));
+      $("tCur").textContent = fmt(el.currentTime);
+      $("tDur").textContent = fmt(el.duration);
+    });
+    el.addEventListener("ended", function () { loadTrack(idx + 1, true); });
+    el.addEventListener("error", function () {
+      if (el.getAttribute("src")) toast("Không tải được bài này");
+      playing = false;
+      paint();
+    });
+
+    $("playBtn").addEventListener("click", function () { playing ? pause() : play(); });
+    $("prevBtn").addEventListener("click", function () { loadTrack(idx - 1, playing); });
+    $("nextBtn").addEventListener("click", function () { loadTrack(idx + 1, playing); });
+    $("seek").addEventListener("input", function () {
+      if (el.duration) el.currentTime = (Number(this.value) / 1000) * el.duration;
+    });
+    $("vol").addEventListener("input", function () {
+      vol = Number(this.value) / 100;
+      cfg.volume = Number(this.value);
+      el.volume = vol;
+      if (synth) synth.master.gain.value = vol * 0.5;
+      save();
+    });
+
+    (function vizLoop() {
+      var active = playing;
+      if (active && analyser && data) {
+        analyser.getByteFrequencyData(data);
+        var sum = 0;
+        for (var i = 0; i < bars.length; i++) {
+          var v = data[i + 1] || 0;
+          sum += v;
+          bars[i].style.height = Math.max(12, (v / 255) * 100) + "%";
+        }
+        if (sum === 0) fake();
+      } else if (active) {
+        fake();
+      } else {
+        for (var j = 0; j < bars.length; j++) bars[j].style.height = "15%";
+      }
+      requestAnimationFrame(vizLoop);
+      function fake() {
+        var t = Date.now() / 240;
+        for (var k = 0; k < bars.length; k++) {
+          bars[k].style.height = (30 + Math.abs(Math.sin(t + k * 0.7)) * 62).toFixed(0) + "%";
+        }
+      }
+    })();
+
+    if (synth) synthStart = 0;
+
+    setInterval(function () {
+      if (synth && playing) $("tCur").textContent = fmt((Date.now() - synthStart) / 1000);
+    }, 500);
+
+    return {
+      setTracks: function (list) {
+        var next = list.length ? list : [{ title: "Ambient tổng hợp", url: "synth" }];
+        var sig = JSON.stringify(next);
+        if (sig === this._sig) return; // giữ nguyên bài đang phát khi chỉ đổi giao diện
+        this._sig = sig;
+        tracks = next;
+        if (idx >= tracks.length) idx = 0;
+        loadTrack(idx, playing);
+      },
+      setVolume: function (v) { vol = v; el.volume = v; if (synth) synth.master.gain.value = v * 0.5; },
+      play: play,
+      pause: pause,
+      toggle: function () { playing ? pause() : play(); },
+      isPlaying: function () { return playing; }
+    };
+  })();
+
+  /* ================= MÀN HÌNH MỞ ĐẦU ================= */
+  function enterSite() {
+    var e = $("enter");
+    if (e.classList.contains("hidden")) return;
+    e.classList.add("hidden");
+    if (cfg.audioOn && cfg.autoplay) audio.play();
+  }
+  $("enter").addEventListener("click", enterSite);
+  $("enter").addEventListener("keydown", function (ev) {
+    if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); enterSite(); }
+  });
+
+  /* ================= LƯỢT XEM ================= */
+  (function () {
+    var n = 0;
+    try {
+      n = parseInt(localStorage.getItem(KEY + ".views") || "1482", 10) + 1;
+      localStorage.setItem(KEY + ".views", String(n));
+    } catch (e) { n = 1483; }
+    $("views").textContent = n.toLocaleString("vi-VN");
+  })();
+
+  /* ================= CHIA SẺ ================= */
+  $("shareBtn").addEventListener("click", function () {
+    var url = location.href;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function () { toast("Đã sao chép liên kết"); },
+        function () { toast(url); });
+    } else { toast(url); }
+  });
+
+  /* ================= BẢNG TUỲ CHỈNH ================= */
+  var panel = $("panel");
+
+  function openPanel(v) {
+    panel.classList.toggle("open", v);
+    $("panelBtn").setAttribute("aria-expanded", v ? "true" : "false");
+    if (v) syncInputs();
+  }
+  $("panelBtn").addEventListener("click", function () { openPanel(!panel.classList.contains("open")); });
+  $("closePanel").addEventListener("click", function () { openPanel(false); });
+
+  document.querySelectorAll(".tabs button").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".tabs button").forEach(function (b) { b.setAttribute("aria-selected", "false"); });
+      btn.setAttribute("aria-selected", "true");
+      document.querySelectorAll(".tabpane").forEach(function (p) {
+        p.classList.toggle("on", p.getAttribute("data-pane") === btn.getAttribute("data-tab"));
+      });
+    });
+  });
+
+  var RANGE_LABELS = { blur: "v-blur", alpha: "v-alpha", radius: "v-radius", glow: "v-glow", bgBlur: "v-bgBlur", bgDim: "v-bgDim", pCount: "v-pCount", volume: "v-volume" };
+
+  function syncRangeLabels() {
+    for (var k in RANGE_LABELS) {
+      var el = $(RANGE_LABELS[k]);
+      if (el) el.textContent = cfg[k];
+    }
+  }
+
+  function syncInputs() {
+    document.querySelectorAll("[data-k]").forEach(function (input) {
+      var k = input.getAttribute("data-k");
+      if (input.type === "checkbox") input.checked = !!cfg[k];
+      else input.value = cfg[k];
+    });
+    syncRangeLabels();
+    renderBadgeChips();
+    $("i-json").value = JSON.stringify(cfg, null, 2);
+  }
+
+  document.querySelectorAll("[data-k]").forEach(function (input) {
+    var evt = (input.tagName === "SELECT" || input.type === "checkbox" || input.type === "color") ? "change" : "input";
+    var handler = function () {
+      var k = input.getAttribute("data-k");
+      cfg[k] = input.type === "checkbox" ? input.checked : input.value;
+      syncRangeLabels();
+      render();
+      save();
+    };
+    input.addEventListener(evt, handler);
+    if (input.type === "range" || input.type === "color") input.addEventListener("input", handler);
+  });
+
+  function renderBadgeChips() {
+    var wrap = $("badgeChips");
+    wrap.innerHTML = "";
+    Object.keys(BADGES).forEach(function (id) {
+      var on = (cfg.badges || []).indexOf(id) > -1;
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = BADGES[id].label;
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+      b.addEventListener("click", function () {
+        var list = (cfg.badges || []).slice();
+        var i = list.indexOf(id);
+        if (i > -1) list.splice(i, 1); else list.push(id);
+        cfg.badges = list;
+        render();
+        save();
+        renderBadgeChips();
+      });
+      wrap.appendChild(b);
     });
   }
 
-  // ----- Biểu mẫu chỉnh sửa -----
-  var form = document.getElementById("editForm");
-  var toggleBtn = document.getElementById("toggleBtn");
-
-  function fillForm() {
-    document.getElementById("f-name").value = profile.name;
-    document.getElementById("f-role").value = profile.role;
-    document.getElementById("f-bio").value = profile.bio;
-    document.getElementById("f-avatar").value = profile.avatar;
-    document.getElementById("f-links").value = profile.links.join("\n");
-  }
-
-  function closeForm() {
-    form.classList.remove("open");
-    toggleBtn.setAttribute("aria-expanded", "false");
-  }
-
-  toggleBtn.addEventListener("click", function () {
-    var isOpen = form.classList.toggle("open");
-    toggleBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
-    if (isOpen) { fillForm(); document.getElementById("f-name").focus(); }
+  $("exportBtn").addEventListener("click", function () {
+    var json = JSON.stringify(cfg, null, 2);
+    $("i-json").value = json;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(json).then(function () { toast("Đã sao chép cấu hình"); }, function () {});
+    } else { toast("Đã xuất cấu hình"); }
   });
 
-  document.getElementById("cancelBtn").addEventListener("click", closeForm);
+  $("importBtn").addEventListener("click", function () {
+    try {
+      var data = JSON.parse($("i-json").value);
+      for (var k in data) if (k in DEFAULTS) cfg[k] = data[k];
+      render();
+      save();
+      syncInputs();
+      toast("Đã nhập cấu hình");
+    } catch (e) {
+      toast("JSON không hợp lệ");
+    }
+  });
 
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-    profile.name = document.getElementById("f-name").value.trim() || profile.name;
-    profile.role = document.getElementById("f-role").value.trim() || profile.role;
-    profile.bio = document.getElementById("f-bio").value;
-    profile.avatar = document.getElementById("f-avatar").value.trim() || profile.avatar;
-    profile.links = document.getElementById("f-links").value
-      .split("\n")
-      .map(function (s) { return s.trim(); })
-      .filter(Boolean);
+  $("resetBtn").addEventListener("click", function () {
+    for (var k in DEFAULTS) cfg[k] = DEFAULTS[k];
     render();
-    closeForm();
+    save();
+    syncInputs();
+    toast("Đã khôi phục mặc định");
   });
 
+  addEventListener("keydown", function (e) {
+    if (e.key === "Escape") openPanel(false);
+    var tag = (e.target.tagName || "").toLowerCase();
+    if (tag === "input" || tag === "textarea" || tag === "select") return;
+    if (e.key === "m" || e.key === "M") audio.toggle();
+  });
+
+  /* ================= KHỞI ĐỘNG ================= */
   render();
+  syncInputs();
+  if (!cfg.enterOn) $("enter").classList.add("hidden");
+})();
 </script>
 </body>
 </html>
