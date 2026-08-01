@@ -140,5 +140,5 @@ Tùy biến
 Giấy phép
 Kho này dùng MIT License — xem file LICENSE kèm theo.
 
-Đóng góp
-Tạo Pull Request hoặc Issue để đề xuất thay đổi. Hoan nghênh những thay đổi từ bạn và cộng đồng!
+Đóng góp vui lòng 
+tạo Pull Request hoặc Issue để đề xuất thay đổi. Hoan nghênh những thay đổi từ bạn và cộng đồng!
