@@ -7,7 +7,7 @@
   </a>
 </p>
 
-# SILO — Personal Profile / Trang hồ sơ cá nhân
+# Profile Project — Personal Profile / Trang hồ sơ cá nhân
 
 Author: @siloneedsleep
 
@@ -88,7 +88,7 @@ Create a Pull Request or open an Issue. If you want, I can add PR/Issue template
 
 ## Tóm tắt (Tiếng Việt)
 
-SILO là trang hồ sơ/portfolio cá nhân tối giản, phát triển bằng Next.js (TypeScript). Mục tiêu là rõ ràng, tải nhanh và dễ tùy biến. Trang đang hoạt động tại: https://siloneedsleep.duckdns.org/
+Profile Project là dự án trang hồ sơ/portfolio cá nhân tối giản, phát triển bằng Next.js (TypeScript). Mục tiêu là rõ ràng, tải nhanh và dễ tùy biến. Trang đang hoạt động tại: https://siloneedsleep.duckdns.org/
 
 Tác giả: @siloneedsleep
 
@@ -141,7 +141,7 @@ Giấy phép
 Kho này dùng MIT License — xem file LICENSE kèm theo.
 
 Đóng góp
-Tạo Pull Request hoặc Issue để đề xuất thay đổi. Mình có thể thêm template PR/Issue hoặc badges CI nếu bạn muốn.
+Tạo Pull Request hoặc Issue để đề xuất thay đổi. Hoan nghênh những thay đổi từ bạn và cộng đồng!
 
 ---
 
@@ -149,7 +149,3 @@ If you'd like, I can also:
 - Add the screenshot preview (upload image to `assets/` and I'll insert it)
 - Add CI/badges (build, license, last commit)
 - Add detailed nginx + systemd deployment examples
-
----
-
-Generated and updated by repository maintainer via GitHub Copilot.
