@@ -29,7 +29,10 @@
   body {
     margin: 0;
     min-height: 100vh;
+    min-height: 100dvh;
     font-family: var(--font);
+    -webkit-text-size-adjust: 100%;
+    overscroll-behavior-y: none;
     color: var(--text);
     background: var(--bg);
     -webkit-font-smoothing: antialiased;
@@ -84,6 +87,7 @@
     position: relative;
     z-index: 3;
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -538,6 +542,181 @@
   }
   #toast.on { opacity: 1; transform: translate(-50%, 0); }
 
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* ---------- Lớp khoá (mật khẩu / PIN) ---------- */
+  #lock {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: none;
+    place-items: center;
+    padding: 1.1rem;
+    background: rgba(4, 5, 7, 0.74);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+  #lock.on { display: grid; }
+  .lock-box {
+    width: 100%;
+    max-width: 340px;
+    padding: 1.5rem 1.3rem 1.3rem;
+    border-radius: 22px;
+    text-align: center;
+    background: rgba(13, 15, 20, 0.97);
+    border: 1px solid var(--line);
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.65);
+    animation: rise 0.32s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  .lock-ico {
+    width: 46px; height: 46px;
+    margin: 0 auto 0.8rem;
+    display: grid; place-items: center;
+    border-radius: 14px;
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+  .lock-ico svg { width: 22px; height: 22px; }
+  .lock-box h2 { margin: 0 0 0.2rem; font-size: 1.02rem; font-weight: 600; }
+  .lock-box .sub { margin: 0 0 1rem; font-size: 0.76rem; color: var(--muted); }
+  .seg {
+    display: flex; gap: 0.3rem;
+    padding: 0.25rem;
+    margin-bottom: 1rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--line);
+  }
+  .seg button {
+    flex: 1;
+    font: inherit;
+    cursor: pointer;
+    padding: 0.42rem;
+    font-size: 0.78rem;
+    color: var(--muted);
+    background: transparent;
+    border: none;
+    border-radius: 999px;
+  }
+  .seg button[aria-selected="true"] { color: #05201d; background: var(--accent); font-weight: 600; }
+  .lock-pane { display: none; }
+  .lock-pane.on { display: block; }
+  .lock-box input[type="password"], .lock-box input[type="text"] {
+    width: 100%;
+    padding: 0.7rem 0.8rem;
+    font: inherit;
+    font-size: 0.9rem;
+    text-align: center;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+  .lock-box input:focus {
+    outline: none;
+    border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
+  }
+  .dots { display: flex; justify-content: center; gap: 0.45rem; margin-bottom: 0.95rem; }
+  .dots i {
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.16);
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+  .dots i.f { background: var(--accent); transform: scale(1.18); }
+  .keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+  .keys button {
+    font: inherit;
+    cursor: pointer;
+    padding: 0.78rem 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    transition: background 0.14s ease, transform 0.1s ease;
+  }
+  .keys button:active { background: color-mix(in srgb, var(--accent) 28%, transparent); transform: scale(0.96); }
+  .keys button.aux { font-size: 0.76rem; font-weight: 500; color: var(--muted); }
+  .lock-err { min-height: 1.05rem; margin: 0.75rem 0 0; font-size: 0.75rem; color: #ff8f8f; }
+  .lock-cancel { margin-top: 0.55rem; }
+
+  /* ---------- Tối ưu máy tính lớn ---------- */
+  @media (min-width: 1200px) {
+    .card { max-width: 480px; }
+    body.layout-split .card { max-width: 880px; grid-template-columns: minmax(0, 280px) minmax(0, 1fr); }
+  }
+
+  /* ---------- Tối ưu thiết bị cảm ứng ---------- */
+  @media (hover: none) {
+    .socials a { width: 44px; height: 44px; }
+    .socials a::after { display: none; }
+    .socials svg { width: 19px; height: 19px; }
+    .icon-btn { width: 34px; height: 34px; }
+    .icon-btn svg { width: 16px; height: 16px; }
+    .links a:hover, .socials a:hover, .badges span:hover, .btn:hover, #panelBtn:hover { transform: none; }
+  }
+
+  /* ---------- Bảng tuỳ chỉnh dạng tấm trượt dưới ---------- */
+  @media (max-width: 640px) {
+    #panel {
+      top: auto; left: 0; right: 0;
+      width: 100%;
+      height: 88vh; height: 88dvh;
+      border-left: 0;
+      border-top: 1px solid var(--line);
+      border-radius: 22px 22px 0 0;
+      transform: translateY(103%);
+    }
+    #panel.open { transform: none; }
+    #panel::before {
+      content: "";
+      position: absolute;
+      top: 8px; left: 50%;
+      width: 42px; height: 4px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.18);
+    }
+    .panel-head { padding: 1.05rem 1rem 0.8rem; }
+    .tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tabs button { flex: none; }
+    .panel-body { padding: 1rem 1rem calc(2rem + env(safe-area-inset-bottom)); }
+    .field input[type="text"], .field input[type="url"], .field textarea, .field select { font-size: 16px; }
+  }
+
+  /* ---------- Tối ưu điện thoại ---------- */
+  @media (max-width: 560px) {
+    .wrap { align-items: flex-start; padding: 1.5rem 0.8rem calc(6rem + env(safe-area-inset-bottom)); }
+    .card { padding: 1.6rem 1.1rem 1.2rem; }
+    .avatar-wrap { width: 96px; height: 96px; }
+    .status-dot { width: 19px; height: 19px; border-width: 2.5px; }
+    .bio { font-size: 0.88rem; margin-top: 1rem; }
+    .links a { padding: 0.85rem 0.9rem; }
+    .player, .discord { margin-top: 1rem; }
+    #panelBtn { right: 0.75rem; bottom: calc(0.75rem + env(safe-area-inset-bottom)); }
+    #toast { bottom: calc(4.6rem + env(safe-area-inset-bottom)); width: max-content; max-width: calc(100vw - 2rem); }
+    .keys button { padding: 0.85rem 0; }
+  }
+  @media (max-width: 380px) {
+    #panelBtn .btn-label { display: none; }
+    #panelBtn { padding: 0.7rem; border-radius: 50%; }
+    .badges span { width: 25px; height: 25px; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
   }
@@ -629,10 +808,41 @@
     </section>
   </main>
 
-  <button id="panelBtn" type="button" aria-controls="panel" aria-expanded="false">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/><circle cx="12" cy="12" r="3.5"/></svg>
-    Tuỳ chỉnh
+  <button id="panelBtn" type="button" aria-controls="panel" aria-expanded="false" aria-label="Mở bảng tuỳ chỉnh">
+    <svg id="panelBtnIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10.5" rx="2.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>
+    <span class="btn-label" id="panelBtnLabel">Tuỳ chỉnh</span>
   </button>
+
+  <div id="lock" role="dialog" aria-modal="true" aria-labelledby="lockTitle">
+    <div class="lock-box">
+      <div class="lock-ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10.5" width="16" height="10.5" rx="2.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/><path d="M12 15v2"/></svg>
+      </div>
+      <h2 id="lockTitle">Trang riêng tư</h2>
+      <p class="sub">Nhập mật khẩu hoặc mã PIN để mở bảng tuỳ chỉnh.</p>
+
+      <div class="seg" role="tablist" aria-label="Cách mở khoá">
+        <button type="button" role="tab" data-lock="pw" aria-selected="true">Mật khẩu</button>
+        <button type="button" role="tab" data-lock="pin" aria-selected="false">Mã PIN</button>
+      </div>
+
+      <div class="lock-pane on" data-lockpane="pw">
+        <label class="sr-only" for="lockPw">Mật khẩu</label>
+        <input id="lockPw" type="password" autocomplete="current-password" placeholder="mật khẩu" />
+        <div class="btn-row">
+          <button class="btn btn-primary" id="lockPwGo" type="button">Mở khoá</button>
+        </div>
+      </div>
+
+      <div class="lock-pane" data-lockpane="pin">
+        <div class="dots" id="pinDots" aria-hidden="true"></div>
+        <div class="keys" id="pinKeys"></div>
+      </div>
+
+      <p class="lock-err" id="lockErr" role="alert" aria-live="assertive"></p>
+      <button class="btn lock-cancel" id="lockCancel" type="button">Đóng</button>
+    </div>
+  </div>
 
   <aside id="panel" aria-label="Bảng tuỳ chỉnh trang cá nhân">
     <div class="panel-head">
@@ -767,6 +977,17 @@
 
       <!-- Nâng cao -->
       <div class="tabpane" data-pane="adv">
+        <p class="sect">Bảo mật</p>
+        <div class="check"><input type="checkbox" id="i-lockOn" data-k="lockOn" /><label for="i-lockOn">Khoá bảng tuỳ chỉnh</label></div>
+        <div class="field"><label for="i-newPw">Đổi mật khẩu</label><input id="i-newPw" type="password" autocomplete="new-password" placeholder="mật khẩu mới" /></div>
+        <div class="field"><label for="i-newPin">Đổi mã PIN (4–10 số)</label><input id="i-newPin" type="text" inputmode="numeric" placeholder="ví dụ 20072011" /></div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="savePwBtn" type="button">Lưu mã mới</button>
+          <button class="btn" id="lockNowBtn" type="button">Khoá lại</button>
+        </div>
+        <p class="hint">Mã được lưu dạng băm trong trình duyệt này và không nằm trong JSON xuất ra. Đây là lớp bảo vệ nhẹ cho trang cá nhân, không phải bảo mật cấp máy chủ.</p>
+
+        <p class="sect">Sao lưu</p>
         <p class="hint">Cấu hình được lưu trong trình duyệt này. Xuất JSON để sao lưu hoặc chuyển sang máy khác.</p>
         <div class="field"><label for="i-json">Cấu hình JSON</label><textarea id="i-json" rows="10"></textarea></div>
         <div class="btn-row">
@@ -789,6 +1010,23 @@
 
   var KEY = "silo.profile.v2";
   var $ = function (id) { return document.getElementById(id); };
+
+  /* Thiết bị cảm ứng: bỏ con trỏ tuỳ chỉnh và nghiêng card cho mượt */
+  var TOUCH = !window.matchMedia || window.matchMedia("(hover: none), (pointer: coarse)").matches;
+  var SMALL = function () { return window.innerWidth < 640; };
+
+  /* Băm nhẹ (FNV-1a 32-bit x 2 vòng) — đủ để không lưu mã ở dạng chữ thường */
+  function hash(str) {
+    var s = "silo::" + String(str);
+    var h1 = 0x811c9dc5, h2 = 0x01000193;
+    for (var i = 0; i < s.length; i++) {
+      h1 ^= s.charCodeAt(i); h1 = (h1 * 0x01000193) >>> 0;
+      h2 = (h2 + s.charCodeAt(i) * (i + 7)) >>> 0; h2 = (h2 ^ (h2 << 5)) >>> 0;
+    }
+    return h1.toString(36) + "-" + h2.toString(36);
+  }
+
+  var SECRET_KEYS = { pwHash: 1, pinHash: 1 };
 
   var DEFAULTS = {
     name: "Minh Anh",
@@ -837,7 +1075,10 @@
       "https://t.me/siloneedsleep",
       "mailto:xin.chao@email.com"
     ].join("\n"),
-    buttonsRaw: "Portfolio | https://siloneedsleep.dev\nCommission mở | https://siloneedsleep.dev/commission"
+    buttonsRaw: "Portfolio | https://siloneedsleep.dev\nCommission mở | https://siloneedsleep.dev/commission",
+    lockOn: true,
+    pwHash: hash("shimanodzvaii"),
+    pinHash: hash("20072011")
   };
 
   var cfg = load();
@@ -986,7 +1227,7 @@
       (cfg.layout === "split" ? "layout-split " : "layout-center ") +
       (cfg.avatarShape === "square" ? "avatar-square " : "") +
       (cfg.font === "mono" ? "mono-font " : "") +
-      (cfg.cursor ? "no-cursor" : "");
+      (cfg.cursor && !TOUCH ? "no-cursor" : "");
 
     clearTypers();
 
@@ -1092,9 +1333,10 @@
     $("enterTitle").textContent = cfg.enterText;
 
     fx.start(cfg.particles, Number(cfg.pCount));
-    cursorFx.toggle(cfg.cursor);
+    cursorFx.toggle(cfg.cursor && !TOUCH);
     titleFx.start(cfg.titleText);
-    tilt.toggle(cfg.tilt);
+    tilt.toggle(cfg.tilt && !TOUCH);
+    lock.syncButton();
   }
 
   /* ================= HẠT NỀN ================= */
@@ -1193,7 +1435,9 @@
 
     function start(t, n) {
       type = t || "none";
-      count = n || 70;
+      // Điện thoại: giảm mật độ hạt để tiết kiệm pin và giữ 60fps
+      var raw = n || 70;
+      count = SMALL() ? Math.max(10, Math.round(raw * 0.5)) : raw;
       if (raf) cancelAnimationFrame(raf);
       raf = null;
       resize();
@@ -1201,10 +1445,24 @@
       parts = [];
       if (type === "none") return;
       for (var i = 0; i < count; i++) parts.push(make());
-      raf = requestAnimationFrame(frame);
+      if (!document.hidden) raf = requestAnimationFrame(frame);
     }
 
-    addEventListener("resize", function () { resize(); });
+    // Tạm dừng khi tab bị ẩn
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) {
+        if (raf) { cancelAnimationFrame(raf); raf = null; }
+      } else if (!raf && type !== "none") {
+        raf = requestAnimationFrame(frame);
+      }
+    });
+
+    var rt = null;
+    addEventListener("resize", function () {
+      clearTimeout(rt);
+      rt = setTimeout(function () { start(type, cfg.pCount); }, 180);
+    });
+    addEventListener("orientationchange", function () { setTimeout(function () { start(type, cfg.pCount); }, 260); });
     return { start: start };
   })();
 
@@ -1220,10 +1478,13 @@
     }
     var mx = -100, my = -100;
 
-    addEventListener("pointermove", function (e) { mx = e.clientX; my = e.clientY; });
+    addEventListener("pointermove", function (e) {
+      if (e.pointerType && e.pointerType !== "mouse") return;
+      mx = e.clientX; my = e.clientY;
+    }, { passive: true });
 
     (function loop() {
-      if (on) {
+      if (on && !document.hidden) {
         dot.style.transform = "translate(" + mx + "px," + my + "px) translate(-50%,-50%)";
         var px = mx, py = my;
         trails.forEach(function (t) {
@@ -1249,7 +1510,7 @@
   var tilt = (function () {
     var card = $("card"), on = false;
     addEventListener("pointermove", function (e) {
-      if (!on) return;
+      if (!on || (e.pointerType && e.pointerType !== "mouse")) return;
       var r = card.getBoundingClientRect();
       var cx = (e.clientX - r.left) / r.width - 0.5;
       var cy = (e.clientY - r.top) / r.height - 0.5;
@@ -1556,16 +1817,170 @@
     } else { toast(url); }
   });
 
+  /* ================= KHOÁ MẬT KHẨU / PIN ================= */
+  var lock = (function () {
+    var SKEY = KEY + ".unlocked";
+    var box = $("lock"), errEl = $("lockErr");
+    var pin = "", tries = 0, until = 0, unlocked = false;
+    var PIN_MAX = 10;
+
+    try { unlocked = sessionStorage.getItem(SKEY) === "1"; } catch (e) {}
+
+    // Bàn phím số
+    var keys = $("pinKeys");
+    ["1", "2", "3", "4", "5", "6", "7", "8", "9", "clear", "0", "back"].forEach(function (k) {
+      var b = document.createElement("button");
+      b.type = "button";
+      if (k === "clear") { b.className = "aux"; b.textContent = "Xoá hết"; b.setAttribute("aria-label", "Xoá hết"); }
+      else if (k === "back") { b.className = "aux"; b.textContent = "⌫"; b.setAttribute("aria-label", "Xoá một số"); }
+      else b.textContent = k;
+      b.addEventListener("click", function () {
+        if (k === "clear") pin = "";
+        else if (k === "back") pin = pin.slice(0, -1);
+        else if (pin.length < PIN_MAX) pin += k;
+        drawDots();
+        if (pin.length >= 4) tryPin();
+      });
+      keys.appendChild(b);
+    });
+
+    function drawDots() {
+      var d = $("pinDots");
+      d.innerHTML = "";
+      var n = Math.max(pin.length, 4);
+      for (var i = 0; i < n; i++) {
+        var dot = document.createElement("i");
+        if (i < pin.length) dot.className = "f";
+        d.appendChild(dot);
+      }
+    }
+
+    function blocked() {
+      var left = Math.ceil((until - Date.now()) / 1000);
+      if (left > 0) { errEl.textContent = "Thử lại sau " + left + " giây."; return true; }
+      return false;
+    }
+
+    function fail() {
+      tries++;
+      if (tries >= 5) { until = Date.now() + 30000; tries = 0; errEl.textContent = "Sai quá nhiều lần. Chờ 30 giây."; }
+      else errEl.textContent = "Không đúng. Còn " + (5 - tries) + " lần thử.";
+    }
+
+    function unlock() {
+      unlocked = true;
+      tries = 0;
+      try { sessionStorage.setItem(SKEY, "1"); } catch (e) {}
+      close();
+      openPanel(true);
+      toast("Đã mở khoá");
+      syncButton();
+    }
+
+    function tryPin() {
+      if (blocked()) return;
+      if (hash(pin) === cfg.pinHash) { pin = ""; drawDots(); unlock(); }
+      else { fail(); pin = ""; drawDots(); }
+    }
+
+    function tryPw() {
+      if (blocked()) return;
+      var v = $("lockPw").value;
+      if (v && hash(v) === cfg.pwHash) { $("lockPw").value = ""; unlock(); }
+      else { fail(); $("lockPw").select(); }
+    }
+
+    function open() {
+      errEl.textContent = "";
+      pin = "";
+      drawDots();
+      box.classList.add("on");
+      if (!TOUCH) setTimeout(function () { $("lockPw").focus(); }, 60);
+    }
+
+    function close() {
+      box.classList.remove("on");
+      $("lockPw").value = "";
+      pin = "";
+      errEl.textContent = "";
+    }
+
+    document.querySelectorAll("[data-lock]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        document.querySelectorAll("[data-lock]").forEach(function (x) { x.setAttribute("aria-selected", "false"); });
+        b.setAttribute("aria-selected", "true");
+        var m = b.getAttribute("data-lock");
+        document.querySelectorAll("[data-lockpane]").forEach(function (p) {
+          p.classList.toggle("on", p.getAttribute("data-lockpane") === m);
+        });
+        errEl.textContent = "";
+        if (m === "pw" && !TOUCH) $("lockPw").focus();
+      });
+    });
+
+    $("lockPwGo").addEventListener("click", tryPw);
+    $("lockPw").addEventListener("keydown", function (e) {
+      if (e.key === "Enter" && !e.isComposing && e.keyCode !== 229) tryPw();
+    });
+    $("lockCancel").addEventListener("click", close);
+    box.addEventListener("click", function (e) { if (e.target === box) close(); });
+
+    function syncButton() {
+      var locked = cfg.lockOn && !unlocked;
+      var icon = $("panelBtnIcon");
+      icon.innerHTML = locked
+        ? '<rect x="4" y="10.5" width="16" height="10.5" rx="2.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/>'
+        : '<path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/><circle cx="12" cy="12" r="3.5"/>';
+      $("panelBtnLabel").textContent = locked ? "Mở khoá" : "Tuỳ chỉnh";
+      $("panelBtn").setAttribute("aria-label", locked ? "Mở khoá bảng tuỳ chỉnh" : "Mở bảng tuỳ chỉnh");
+    }
+
+    return {
+      isOpen: function () { return box.classList.contains("on"); },
+      needs: function () { return cfg.lockOn && !unlocked; },
+      open: open,
+      close: close,
+      relock: function () {
+        unlocked = false;
+        try { sessionStorage.removeItem(SKEY); } catch (e) {}
+        syncButton();
+      },
+      syncButton: syncButton
+    };
+  })();
+
   /* ================= BẢNG TUỲ CHỈNH ================= */
   var panel = $("panel");
 
   function openPanel(v) {
+    if (v && lock.needs()) { lock.open(); return; }
     panel.classList.toggle("open", v);
     $("panelBtn").setAttribute("aria-expanded", v ? "true" : "false");
+    // Điện thoại: chặn cuộn trang phía sau khi tấm trượt đang mở
+    document.documentElement.style.overflow = v && SMALL() ? "hidden" : "";
     if (v) syncInputs();
   }
   $("panelBtn").addEventListener("click", function () { openPanel(!panel.classList.contains("open")); });
   $("closePanel").addEventListener("click", function () { openPanel(false); });
+
+  $("savePwBtn").addEventListener("click", function () {
+    var pw = $("i-newPw").value.trim();
+    var pn = $("i-newPin").value.trim();
+    if (!pw && !pn) { toast("Chưa nhập mã mới"); return; }
+    if (pn && !/^\d{4,10}$/.test(pn)) { toast("PIN phải là 4–10 chữ số"); return; }
+    if (pw) { if (pw.length < 4) { toast("Mật khẩu cần từ 4 ký tự"); return; } cfg.pwHash = hash(pw); }
+    if (pn) cfg.pinHash = hash(pn);
+    save();
+    $("i-newPw").value = "";
+    $("i-newPin").value = "";
+    toast("Đã lưu mã mới");
+  });
+
+  $("lockNowBtn").addEventListener("click", function () {
+    lock.relock();
+    openPanel(false);
+    toast("Đã khoá lại");
+  });
 
   document.querySelectorAll(".tabs button").forEach(function (btn) {
     btn.addEventListener("click", function () {
@@ -1594,7 +2009,14 @@
     });
     syncRangeLabels();
     renderBadgeChips();
-    $("i-json").value = JSON.stringify(cfg, null, 2);
+    $("i-json").value = publicJson();
+  }
+
+  /* JSON không chứa mật khẩu / PIN */
+  function publicJson() {
+    var out = {};
+    for (var k in cfg) if (!SECRET_KEYS[k]) out[k] = cfg[k];
+    return JSON.stringify(out, null, 2);
   }
 
   document.querySelectorAll("[data-k]").forEach(function (input) {
@@ -1633,7 +2055,7 @@
   }
 
   $("exportBtn").addEventListener("click", function () {
-    var json = JSON.stringify(cfg, null, 2);
+    var json = publicJson();
     $("i-json").value = json;
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(json).then(function () { toast("Đã sao chép cấu hình"); }, function () {});
@@ -1643,7 +2065,7 @@
   $("importBtn").addEventListener("click", function () {
     try {
       var data = JSON.parse($("i-json").value);
-      for (var k in data) if (k in DEFAULTS) cfg[k] = data[k];
+      for (var k in data) if (k in DEFAULTS && !SECRET_KEYS[k]) cfg[k] = data[k];
       render();
       save();
       syncInputs();
@@ -1654,7 +2076,7 @@
   });
 
   $("resetBtn").addEventListener("click", function () {
-    for (var k in DEFAULTS) cfg[k] = DEFAULTS[k];
+    for (var k in DEFAULTS) if (!SECRET_KEYS[k]) cfg[k] = DEFAULTS[k];
     render();
     save();
     syncInputs();
@@ -1662,7 +2084,10 @@
   });
 
   addEventListener("keydown", function (e) {
-    if (e.key === "Escape") openPanel(false);
+    if (e.key === "Escape") {
+      if (lock.isOpen()) lock.close();
+      else openPanel(false);
+    }
     var tag = (e.target.tagName || "").toLowerCase();
     if (tag === "input" || tag === "textarea" || tag === "select") return;
     if (e.key === "m" || e.key === "M") audio.toggle();
